@@ -9,6 +9,8 @@ import './App.css'
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
 const TOTAL_POINTS = 180
 const SEED = 42
+const HEALTH_RETRY_MS = 5000
+const HEALTH_TIMEOUT_MS = 90000
 
 const SCENARIOS = [
   { id: 'normal', label: 'Normal Operation', description: 'Control run containing no injected fault.' },
@@ -141,7 +143,68 @@ function App() {
   const [speed, setSpeed] = useState(150)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [serviceStatus, setServiceStatus] = useState('connecting')
+  const [healthCheckKey, setHealthCheckKey] = useState(0)
   const requestId = useRef(0)
+
+  useEffect(() => {
+    let active = true
+    const controllers = new Set()
+
+    const stopRequests = () => {
+      controllers.forEach((controller) => controller.abort())
+      controllers.clear()
+    }
+
+    const checkHealth = async () => {
+      if (!active) return
+      const controller = new AbortController()
+      controllers.add(controller)
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/health`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        })
+        if (!active) return
+        if (response.ok) {
+          active = false
+          window.clearInterval(retryTimer)
+          window.clearTimeout(startingTimer)
+          window.clearTimeout(timeoutTimer)
+          stopRequests()
+          setServiceStatus('ready')
+          return
+        }
+        setServiceStatus('starting')
+      } catch (cause) {
+        if (active && cause.name !== 'AbortError') setServiceStatus('starting')
+      } finally {
+        controllers.delete(controller)
+      }
+    }
+
+    checkHealth()
+    const startingTimer = window.setTimeout(() => {
+      if (active) setServiceStatus('starting')
+    }, HEALTH_RETRY_MS)
+    const retryTimer = window.setInterval(checkHealth, HEALTH_RETRY_MS)
+    const timeoutTimer = window.setTimeout(() => {
+      if (!active) return
+      active = false
+      window.clearInterval(retryTimer)
+      window.clearTimeout(startingTimer)
+      stopRequests()
+      setServiceStatus('unavailable')
+    }, HEALTH_TIMEOUT_MS)
+
+    return () => {
+      active = false
+      window.clearInterval(retryTimer)
+      window.clearTimeout(startingTimer)
+      window.clearTimeout(timeoutTimer)
+      stopRequests()
+    }
+  }, [healthCheckKey])
 
   useEffect(() => {
     if (!playing || !simulation) return undefined
@@ -168,6 +231,7 @@ function App() {
   const selectedScenario = SCENARIOS.find((item) => item.id === scenario)
 
   async function start() {
+    if (serviceStatus !== 'ready') return
     if (simulation && visibleCount < simulation.telemetry.length) {
       setPlaying(true)
       return
@@ -203,6 +267,18 @@ function App() {
     setScenario(nextScenario)
   }
 
+  function retryHealthCheck() {
+    setServiceStatus('connecting')
+    setHealthCheckKey((key) => key + 1)
+  }
+
+  const serviceMessage = {
+    connecting: 'Connecting to analysis service...',
+    starting: 'Analysis service is starting. This may take up to one minute.',
+    ready: 'Analysis service ready',
+    unavailable: 'Analysis service did not respond within 90 seconds. Check the deployment and try again.',
+  }[serviceStatus]
+
   return <div className="app-shell">
     <header className="topbar">
       <div className="nav-brand"><strong>ASTRA</strong><span>Spacecraft Telemetry Decision Support</span></div>
@@ -220,9 +296,15 @@ function App() {
         <small>Select a scenario → Start simulation → Review the detected event</small>
       </section>
 
+      <section className={`service-connection service-${serviceStatus}`} aria-live="polite" aria-atomic="true">
+        <span className="service-indicator" aria-hidden="true" />
+        <p>{serviceMessage}</p>
+        {serviceStatus === 'unavailable' && <button type="button" onClick={retryHealthCheck}>Retry</button>}
+      </section>
+
       <section className="control-bar" aria-label="Simulation controls">
         <div className="scenario-block"><div className="scenario-control" role="group" aria-label="Scenario">{SCENARIOS.map((item) => <button key={item.id} type="button" className={scenario === item.id ? 'selected' : ''} aria-pressed={scenario === item.id} onClick={() => reset(item.id)}>{item.label}</button>)}</div><p>{selectedScenario.description}</p></div>
-        <div className="action-control"><button type="button" className="start-button" onClick={start} disabled={loading || playing}><CirclePlay size={16} />{loading ? 'Loading…' : 'Start Simulation'}</button><button type="button" onClick={() => setPlaying(false)} disabled={!playing}><CirclePause size={16} />Pause</button><button type="button" onClick={() => reset()}><RotateCcw size={15} />Reset</button></div>
+        <div className="action-control"><button type="button" className="start-button" onClick={start} disabled={serviceStatus !== 'ready' || loading || playing} title={serviceStatus === 'ready' ? undefined : 'Waiting for the analysis service'}><CirclePlay size={16} />{loading ? 'Loading…' : 'Start Simulation'}</button><button type="button" onClick={() => setPlaying(false)} disabled={!playing}><CirclePause size={16} />Pause</button><button type="button" onClick={() => reset()}><RotateCcw size={15} />Reset</button></div>
         <label className="speed-control">Playback speed <select value={speed} onChange={(eventValue) => setSpeed(Number(eventValue.target.value))}>{SPEEDS.map((item) => <option key={item.ms} value={item.ms}>{item.label}</option>)}</select></label>
       </section>
       {error && <div className="error-message" role="alert">{error}</div>}
