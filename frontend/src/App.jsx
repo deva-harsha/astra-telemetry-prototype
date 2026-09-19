@@ -11,6 +11,7 @@ const TOTAL_POINTS = 180
 const SEED = 42
 const HEALTH_RETRY_MS = 5000
 const HEALTH_TIMEOUT_MS = 90000
+const WORKFLOW_STAGES = ['Receive telemetry', 'Analyse patterns', 'Confirm anomaly', 'Explain alert']
 
 const SCENARIOS = [
   { id: 'normal', label: 'Normal Operation', description: 'Control run containing no injected fault.' },
@@ -116,6 +117,7 @@ function TelemetryChart({ data, subsystem, scenario, totalPoints, event, eventSe
   const detectionTime = eventStartIndex >= 0 ? data[eventStartIndex + 2]?.timestamp : null
   const eventEndIndex = eventStartIndex >= 0 ? Math.min(data.length - 1, eventStartIndex + event.duration - 1) : -1
   const eventEndTime = eventEndIndex >= 0 ? data[eventEndIndex]?.timestamp : null
+  const eventColor = event?.severity === 'high' ? '#cf8278' : '#c7a16d'
 
   return <div className="chart-frame">
     {data.length === 0 ? <div className="chart-empty"><span>Telemetry plot ready</span><p>Start a simulation to reveal the 180-observation mission replay.</p></div> :
@@ -128,7 +130,7 @@ function TelemetryChart({ data, subsystem, scenario, totalPoints, event, eventSe
           {eventTime && eventEndTime && <ReferenceArea x1={eventTime} x2={eventEndTime} fill={event?.severity === 'high' ? '#a9534c' : '#b48b50'} fillOpacity={0.12} strokeOpacity={0} />}
           {faultTime && <ReferenceLine x={faultTime} stroke="#b48b50" strokeDasharray="4 4" label={{ value: 'Fault injected', position: 'insideTopRight', fill: '#c7a677', fontSize: 10 }} />}
           {detectionTime && <ReferenceLine x={detectionTime} stroke="#b66d62" strokeDasharray="2 3" label={{ value: 'Alert confirmed', position: 'insideTopLeft', fill: '#d19489', fontSize: 10 }} />}
-          {subsystem.keys.map((key, index) => <Line key={key} type="monotone" dataKey={key} name={CHANNELS[key].label} stroke={LINE_COLORS[index]} strokeWidth={index === 0 ? 2 : 1.6} strokeDasharray={LINE_DASHES[index]} dot={false} activeDot={{ r: 3 }} isAnimationActive={false} />)}
+          {subsystem.keys.map((key, index) => { const contributes = eventSeen && event.contributing_channels.includes(key); return <Line key={key} type="monotone" dataKey={key} name={CHANNELS[key].label} stroke={contributes ? eventColor : LINE_COLORS[index]} strokeOpacity={eventSeen && !contributes ? 0.35 : 1} strokeWidth={contributes ? 2.5 : index === 0 ? 2 : 1.6} strokeDasharray={LINE_DASHES[index]} dot={false} activeDot={{ r: 3 }} isAnimationActive={false} /> })}
         </LineChart>
       </ResponsiveContainer>}
   </div>
@@ -145,6 +147,8 @@ function App() {
   const [error, setError] = useState('')
   const [serviceStatus, setServiceStatus] = useState('connecting')
   const [healthCheckKey, setHealthCheckKey] = useState(0)
+  const [runSequence, setRunSequence] = useState(0)
+  const [explainedEventKey, setExplainedEventKey] = useState(null)
   const requestId = useRef(0)
 
   useEffect(() => {
@@ -226,9 +230,25 @@ function App() {
   const eventIndex = event ? simulation.telemetry.findIndex((point) => point.timestamp === event.event_start_time) : -1
   const eventSeen = eventIndex >= 0 && visibleCount >= eventIndex + 3
   const activeAlert = eventSeen && Boolean(current?.is_anomaly)
+  const confirmedEventKey = eventSeen ? `${runSequence}:${event.event_start_time}` : null
+  const alertJustConfirmed = Boolean(confirmedEventKey && explainedEventKey !== confirmedEventKey)
   const alertClass = activeAlert ? (current?.severity === 'high' ? 'state-critical' : 'state-warning') : 'state-normal'
   const displayedSeverity = activeAlert ? current?.severity : event?.severity
   const selectedScenario = SCENARIOS.find((item) => item.id === scenario)
+  const runComplete = Boolean(simulation && visibleCount >= simulation.telemetry.length)
+  const faultStartIndex = simulation && scenario !== 'normal' ? Math.floor(simulation.telemetry.length * 0.6) : -1
+  const faultStartTime = faultStartIndex >= 0 ? simulation.telemetry[faultStartIndex]?.timestamp : null
+  const confirmationTime = eventIndex >= 0 ? simulation.telemetry[eventIndex + 2]?.timestamp : null
+  const detectionDelayMinutes = faultStartTime && confirmationTime
+    ? Math.round((new Date(confirmationTime) - new Date(faultStartTime)) / 60000)
+    : null
+  const workflowStage = !simulation || loading ? 0 : !eventSeen ? 1 : alertJustConfirmed ? 2 : 3
+
+  useEffect(() => {
+    if (!confirmedEventKey || explainedEventKey === confirmedEventKey) return undefined
+    const timer = window.setTimeout(() => setExplainedEventKey(confirmedEventKey), 900)
+    return () => window.clearTimeout(timer)
+  }, [confirmedEventKey, explainedEventKey])
 
   async function start() {
     if (serviceStatus !== 'ready') return
@@ -248,6 +268,7 @@ function App() {
       const result = await response.json()
       if (id !== requestId.current) return
       setSimulation(result)
+      setRunSequence((sequence) => sequence + 1)
       setVisibleCount(0)
       setPlaying(true)
     } catch (cause) {
@@ -302,6 +323,11 @@ function App() {
         {serviceStatus === 'unavailable' && <button type="button" onClick={retryHealthCheck}>Retry</button>}
       </section>
 
+      <section className="live-workflow" aria-label="Live workflow">
+        <span className="workflow-label">Live workflow</span>
+        <div>{WORKFLOW_STAGES.map((stage, index) => <span key={stage} className={workflowStage === index ? 'active' : ''} aria-current={workflowStage === index ? 'step' : undefined}>{stage}{index < WORKFLOW_STAGES.length - 1 && <i aria-hidden="true">→</i>}</span>)}</div>
+      </section>
+
       <section className="control-bar" aria-label="Simulation controls">
         <div className="scenario-block"><div className="scenario-control" role="group" aria-label="Scenario">{SCENARIOS.map((item) => <button key={item.id} type="button" className={scenario === item.id ? 'selected' : ''} aria-pressed={scenario === item.id} onClick={() => reset(item.id)}>{item.label}</button>)}</div><p>{selectedScenario.description}</p></div>
         <div className="action-control"><button type="button" className="start-button" onClick={start} disabled={serviceStatus !== 'ready' || loading || playing} title={serviceStatus === 'ready' ? undefined : 'Waiting for the analysis service'}><CirclePlay size={16} />{loading ? 'Loading…' : 'Start Simulation'}</button><button type="button" onClick={() => setPlaying(false)} disabled={!playing}><CirclePause size={16} />Pause</button><button type="button" onClick={() => reset()}><RotateCcw size={15} />Reset</button></div>
@@ -325,11 +351,13 @@ function App() {
           <div className="chart-legend">{subsystem.keys.map((key, index) => <span key={key}><i className={`line-swatch line-${index}`} />{CHANNELS[key].label}</span>)}</div>
           <TelemetryChart data={visible} subsystem={subsystem} scenario={scenario} totalPoints={TOTAL_POINTS} event={event} eventSeen={eventSeen} />
           <div className="table-heading"><h3>Latest values</h3><span>Observation-wide detector state</span></div>
-          <div className="table-scroll"><table><thead><tr><th>Channel</th><th>Latest value</th><th>Normal range</th><th>Trend</th><th>Detector state</th></tr></thead><tbody>{subsystem.keys.map((key) => { const contributes = eventSeen && event.contributing_channels.includes(key); return <tr key={key}><td>{CHANNELS[key].label}</td><td className="mono-value">{reading(key, current?.[key])}</td><td className="mono-value">{CHANNELS[key].low}–{CHANNELS[key].high} {CHANNELS[key].unit}</td><td>{trend(key, current?.[key], prior?.[key])}</td><td className={contributes ? 'state-warning' : 'muted-cell'}>{contributes ? 'Contributing to event' : 'Within expected range'}</td></tr> })}</tbody></table></div>
+          <div className="table-scroll"><table><thead><tr><th>Channel</th><th>Latest value</th><th>Normal range</th><th>Trend</th><th>Detector state</th></tr></thead><tbody>{subsystem.keys.map((key) => { const contributes = eventSeen && event.contributing_channels.includes(key); const value = current?.[key]; const withinRange = value != null && value >= CHANNELS[key].low && value <= CHANNELS[key].high; const detectorState = contributes ? 'Contributing to event' : value == null ? 'Awaiting telemetry' : withinRange ? 'Within expected range' : 'Outside expected range'; const stateClass = contributes ? displayedSeverity === 'high' ? 'state-critical' : 'state-warning' : 'muted-cell'; return <tr key={key} className={contributes ? `contributing-row severity-${displayedSeverity}` : ''}><td>{CHANNELS[key].label}</td><td className="mono-value">{reading(key, value)}</td><td className="mono-value">{CHANNELS[key].low}–{CHANNELS[key].high} {CHANNELS[key].unit}</td><td>{trend(key, value, prior?.[key])}</td><td className={stateClass}>{detectorState}</td></tr> })}</tbody></table></div>
         </section>
 
-        <aside className="event-area" aria-labelledby="event-title"><span className="kicker">Operator review / 03</span><h2 id="event-title">Event review</h2>{eventSeen ? <div className="event-content"><div className="event-state"><span className={`severity-label severity-${displayedSeverity}`}>{displayedSeverity} severity</span><span>{activeAlert ? 'Active' : 'Observed'}</span></div><section className="review-section detection-summary"><h4>What ASTRA detected</h4><h3>{event.title}</h3><dl className="event-fields"><div><dt>Affected subsystem</dt><dd>{event.affected_subsystem}</dd></div><div><dt>Event start</dt><dd>{timeLabel(event.event_start_time)}</dd></div><div><dt>Duration</dt><dd>{Math.min(event.duration, visibleCount - eventIndex)} min</dd></div><div><dt>Contributing channels</dt><dd>{event.contributing_channels.map((key) => CHANNELS[key]?.label ?? key).join(', ')}</dd></div></dl></section><section className="review-section"><h4>Why it generated an alert</h4><p>{event.explanation}</p></section><section className="review-section"><h4>Operator action</h4><p>{event.operator_review_message}</p></section></div> : <div className="empty-event"><div className="empty-rule" /><h3>No active alert</h3><p>No persistent unusual telemetry pattern detected.</p><small>{simulation ? 'The replay continues to assess incoming observations.' : 'Select a scenario and start the simulation to begin review.'}</small></div>}</aside>
+        <aside className={`event-area ${alertJustConfirmed ? `alert-arrival severity-${displayedSeverity}` : ''}`} aria-labelledby="event-title"><span className="kicker">Operator review / 03</span><h2 id="event-title">Event review</h2>{eventSeen ? <div className="event-content"><div className="event-state"><span className={`severity-label severity-${displayedSeverity}`}>{displayedSeverity} severity</span><span>{activeAlert ? 'Active' : 'Observed'}</span></div><section className="review-section detection-summary"><h4>What ASTRA detected</h4><h3>{event.title}</h3><dl className="event-fields"><div><dt>Affected subsystem</dt><dd>{event.affected_subsystem}</dd></div><div><dt>Event start</dt><dd>{timeLabel(event.event_start_time)}</dd></div><div><dt>Duration</dt><dd>{Math.min(event.duration, visibleCount - eventIndex)} min</dd></div><div><dt>Contributing channels</dt><dd>{event.contributing_channels.map((key) => CHANNELS[key]?.label ?? key).join(', ')}</dd></div></dl></section><section className="review-section"><h4>Event timeline</h4><ol className="event-timeline"><li><span>Fault pattern begins</span><time>{timeLabel(faultStartTime)}</time></li><li><span>Persistence confirmed</span><time>{timeLabel(confirmationTime)}</time></li><li><span>Operator alert generated</span><time>{timeLabel(confirmationTime)}</time></li></ol>{detectionDelayMinutes != null && <p className="detection-delay">Detection delay: {detectionDelayMinutes} min simulated mission time</p>}<p className="persistence-note">Persistence rule: three consecutive unusual observations.</p></section><section className="review-section"><h4>Why it generated an alert</h4><p>{event.explanation}</p></section><section className="review-section"><h4>Operator action</h4><p>{event.operator_review_message}</p></section></div> : <div className="empty-event"><div className="empty-rule" /><h3>No active alert</h3><p>No persistent unusual telemetry pattern detected.</p><small>{simulation ? 'The replay continues to assess incoming observations.' : 'Select a scenario and start the simulation to begin review.'}</small></div>}</aside>
       </div>
+
+      {runComplete && <section className="run-summary" aria-labelledby="run-summary-title"><div className="run-summary-heading"><div><span className="kicker">Replay complete</span><h2 id="run-summary-title">End-of-run summary</h2></div>{!event && <p>No persistent event detected.</p>}</div><dl><div><dt>Observations analysed</dt><dd>{simulation.telemetry.length}</dd></div><div><dt>Persistent events</dt><dd>{simulation.metrics.detected_event_count}</dd></div><div><dt>Contributing channels</dt><dd>{event?.contributing_channels.length ?? 0}</dd></div><div><dt>Average analysis time</dt><dd>{timePerObservation(simulation.metrics.processing_latency_ms, simulation.telemetry.length)}</dd></div><div><dt>Operator review requested</dt><dd>{event ? 'Yes' : 'No'}</dd></div></dl></section>}
 
       <section className="method-section" aria-labelledby="method-title"><div className="method-intro"><span className="kicker">Data and method / 04</span><h2 id="method-title">How this prototype works</h2><p>A repeatable local demonstration of anomaly detection and operator-facing evidence.</p></div><div className="steps">{STEPS.map(([number, title, description]) => <div className="step" key={number}><span>{number}</span><h3>{title}</h3><p>{description}</p></div>)}</div><dl className="method-facts">{METHOD.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></section>
       <footer className="boundary"><span>System boundary</span><p>ASTRA begins after telemetry has been received and decoded by the ground system. This prototype does not communicate with or control a spacecraft.</p></footer>
