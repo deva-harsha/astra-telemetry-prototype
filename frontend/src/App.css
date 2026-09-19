@@ -21,7 +21,13 @@ main { max-width: 1840px; margin: 0 auto; padding: 0 clamp(24px, 4.2vw, 82px) 64
 .state-normal { color: #87aa8e !important; }
 .state-warning { color: #c7a16d !important; }
 .state-critical { color: #cf8278 !important; }
+.demo-guide { display: flex; align-items: baseline; justify-content: space-between; gap: 28px; border-top: 1px solid #292929; padding: 13px 0; }
+.demo-guide p { margin: 0; color: #d5d5d5; font-size: 12px; line-height: 1.5; }
+.demo-guide p span { color: #777; padding: 0 4px; }
+.demo-guide small { color: #898989; font: 10px/1.5 "SFMono-Regular", Consolas, "Liberation Mono", monospace; white-space: nowrap; }
 .control-bar { border-top: 1px solid #444; border-bottom: 1px solid #444; min-height: 68px; display: flex; align-items: center; gap: 24px; padding: 10px 0; }
+.scenario-block { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.scenario-block > p { max-width: 270px; margin: 0; color: #969696; font-size: 10px; line-height: 1.4; }
 .scenario-control, .action-control { display: flex; align-items: center; gap: 3px; }
 .scenario-control { border: 1px solid #343434; padding: 3px; }
 .control-bar button { min-height: 35px; border: 0; border-radius: 0; color: #cecece; background: transparent; padding: 0 13px; font-size: 11px; font-weight: 500; white-space: nowrap; transition: color 180ms, background-color 180ms; }
@@ -42,6 +48,8 @@ main { max-width: 1840px; margin: 0 auto; padding: 0 clamp(24px, 4.2vw, 82px) 64
 .status-item strong { display: block; font: 400 clamp(26px, 2.4vw, 39px)/1.08 "SFMono-Regular", Consolas, "Liberation Mono", monospace; letter-spacing: -.06em; white-space: nowrap; }
 .status-item strong i { color: #747474; font: 12px "SFMono-Regular", Consolas, "Liberation Mono", monospace; margin-left: 5px; letter-spacing: 0; }
 .status-item small { color: #828282; font-size: 10px; line-height: 1.35; }
+.analysis-time strong { font-size: clamp(18px, 1.55vw, 27px); letter-spacing: -.04em; }
+.analysis-time small + small { margin-top: 1px; max-width: 250px; }
 .monitor-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(280px, 3fr); border-bottom: 1px solid #444; }
 .telemetry-area { min-width: 0; padding: 34px 42px 32px 0; }
 .event-area { min-width: 0; border-left: 1px solid #444; padding: 34px 0 32px 36px; }
@@ -56,8 +64,9 @@ main { max-width: 1840px; margin: 0 auto; padding: 0 clamp(24px, 4.2vw, 82px) 64
 .subsystem-tabs button.active::after { content: ''; position: absolute; bottom: -1px; left: 14px; right: 14px; height: 1px; background: #f4f3ee; }
 .subsystem-tabs button:first-child.active::after { left: 0; }
 .chart-head { display: flex; align-items: start; justify-content: space-between; gap: 15px; padding-top: 18px; }
+.normalized-label { display: block; margin-bottom: 7px; color: #c7c7c7; font: 10px/1.4 "SFMono-Regular", Consolas, "Liberation Mono", monospace; text-transform: uppercase; letter-spacing: .07em; }
 .chart-head h3 { margin: 0 0 5px; font-size: 15px; font-weight: 500; }
-.chart-head p { margin: 0; color: #858585; font-size: 10px; line-height: 1.5; }
+.chart-head p { max-width: 760px; margin: 0; color: #858585; font-size: 10px; line-height: 1.55; }
 .chart-time { color: #aaa; font: 11px "SFMono-Regular", Consolas, "Liberation Mono", monospace; white-space: nowrap; }
 .chart-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 15px; min-height: 38px; }
 .chart-legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 10px; color: #b4b4b4; }
@@ -90,6 +99,7 @@ td:first-child { color: #f4f3ee; }
 .severity-high { color: #cf8278; }
 .severity-normal { color: #87aa8e; }
 .event-content h3 { margin: 19px 0 26px; font-size: 22px; font-weight: 450; letter-spacing: -.03em; }
+.detection-summary h3 { margin: 13px 0 20px; }
 .event-fields { margin: 0; }
 .event-fields div { border-top: 1px solid #292929; padding: 12px 0; display: grid; grid-template-columns: 45% 55%; gap: 8px; }
 .event-fields div:last-child { border-bottom: 1px solid #292929; }
@@ -117,6 +127,8 @@ td:first-child { color: #f4f3ee; }
 
 @media (max-width: 1320px) {
   .control-bar { flex-wrap: wrap; }
+  .scenario-block { flex: 1 1 100%; justify-content: space-between; }
+  .scenario-block > p { max-width: 420px; }
   .speed-control { margin-left: 0; }
   .status-item { padding: 0 15px; }
   .telemetry-area { padding-right: 25px; }
@@ -147,7 +159,12 @@ td:first-child { color: #f4f3ee; }
   .intro-facts { grid-template-columns: 1fr; gap: 0; }
   .intro-facts div { display: flex; }
   .intro-facts dd { margin: 0; text-align: right; }
+  .demo-guide { display: block; }
+  .demo-guide p { font-size: 11px; }
+  .demo-guide small { display: block; margin-top: 7px; white-space: normal; }
   .control-bar { display: grid; gap: 14px; }
+  .scenario-block { display: grid; gap: 9px; }
+  .scenario-block > p { max-width: none; }
   .scenario-control { display: grid; grid-template-columns: 1fr; }
   .action-control { border-left: 0; padding-left: 0; display: grid; grid-template-columns: repeat(3, 1fr); }
   .action-control button { padding: 0 5px; }
