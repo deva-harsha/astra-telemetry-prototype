@@ -1,0 +1,154 @@
+{
+  "run_date_utc": "2026-09-24T17:56:02.118627+00:00",
+  "git_commit": "a654c35ba501413d6c320a50836ea67fb32f0602",
+  "config_path": "backend\\evaluation\\configs\\default.json",
+  "data_source": "Official Telemanom SMAP/MSL archive",
+  "mission": "SMAP",
+  "channels": [
+    "A-1",
+    "A-2",
+    "A-3"
+  ],
+  "configuration": {
+    "dataset_version": "astra-simulator-v1",
+    "observations": 180,
+    "rolling_window": 5,
+    "persistence_length": 3,
+    "event_matching_tolerance": 2,
+    "model": {
+      "type": "IsolationForest",
+      "n_estimators": 100,
+      "contamination": 0.06,
+      "random_state": 42
+    },
+    "decisions": {
+      "isolation_decision_threshold": -0.04,
+      "thermal_temperature_threshold": 31.0,
+      "payload_temperature_threshold": 33.0,
+      "battery_voltage_threshold": 26.5,
+      "battery_current_threshold": 3.0
+    },
+    "telemanom": {
+      "feature_pipeline": "primary-value rolling statistics plus documented command inputs",
+      "robust_z_threshold": 6.0
+    },
+    "splits": {
+      "train": {
+        "scenario": "normal",
+        "normal_seeds": [
+          101,
+          102,
+          103,
+          104
+        ]
+      },
+      "validation": {
+        "runs": [
+          {
+            "scenario": "normal",
+            "seed": 201
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 202
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 203
+          }
+        ]
+      },
+      "test": {
+        "runs": [
+          {
+            "scenario": "normal",
+            "seed": 301
+          },
+          {
+            "scenario": "normal",
+            "seed": 302
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 303
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 304
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 305
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 306
+          }
+        ]
+      }
+    }
+  },
+  "original_train_test_separation_preserved": true,
+  "test_metrics": {
+    "threshold": {
+      "point_precision": 0.00984,
+      "point_recall": 0.222513,
+      "point_f1": 0.018847,
+      "event_recall": 0.0,
+      "false_positive_observations": 8553,
+      "point_false_positive_rate": 0.350864,
+      "false_confirmed_events": 1,
+      "false_alerts_per_1000_observations": 0.040389,
+      "missed_events": 3,
+      "mean_detection_delay_observations": null,
+      "median_detection_delay_observations": null,
+      "maximum_detection_delay_observations": null,
+      "ground_truth_events": 3,
+      "detected_events": 1,
+      "evaluated_observations": 24759,
+      "evaluated_runs": 3,
+      "processing_time_ms": 3.171,
+      "processing_time_scope": "Standalone end-to-end decision time including training for selected channels"
+    },
+    "isolation_forest": {
+      "point_precision": 0.0,
+      "point_recall": 0.0,
+      "point_f1": 0.0,
+      "event_recall": 0.0,
+      "false_positive_observations": 2,
+      "point_false_positive_rate": 8.2e-05,
+      "false_confirmed_events": 2,
+      "false_alerts_per_1000_observations": 0.080779,
+      "missed_events": 3,
+      "mean_detection_delay_observations": null,
+      "median_detection_delay_observations": null,
+      "maximum_detection_delay_observations": null,
+      "ground_truth_events": 3,
+      "detected_events": 2,
+      "evaluated_observations": 24759,
+      "evaluated_runs": 3,
+      "processing_time_ms": 372.504,
+      "processing_time_scope": "Standalone end-to-end decision time including training for selected channels"
+    },
+    "combined": {
+      "point_precision": 0.009838,
+      "point_recall": 0.222513,
+      "point_f1": 0.018843,
+      "event_recall": 0.0,
+      "false_positive_observations": 8555,
+      "point_false_positive_rate": 0.350946,
+      "false_confirmed_events": 3,
+      "false_alerts_per_1000_observations": 0.121168,
+      "missed_events": 3,
+      "mean_detection_delay_observations": null,
+      "median_detection_delay_observations": null,
+      "maximum_detection_delay_observations": null,
+      "ground_truth_events": 3,
+      "detected_events": 3,
+      "evaluated_observations": 24759,
+      "evaluated_runs": 3,
+      "processing_time_ms": 614.947,
+      "processing_time_scope": "Standalone end-to-end decision time including training for selected channels"
+    }
+  }
+}

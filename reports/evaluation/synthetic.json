@@ -1,0 +1,273 @@
+{
+  "run_date_utc": "2026-09-24T17:55:56.565182+00:00",
+  "git_commit": "a654c35ba501413d6c320a50836ea67fb32f0602",
+  "config_path": "backend\\evaluation\\configs\\default.json",
+  "data_source": "ASTRA deterministic simulator",
+  "dataset_version": "astra-simulator-v1",
+  "configuration": {
+    "dataset_version": "astra-simulator-v1",
+    "observations": 180,
+    "rolling_window": 5,
+    "persistence_length": 3,
+    "event_matching_tolerance": 2,
+    "model": {
+      "type": "IsolationForest",
+      "n_estimators": 100,
+      "contamination": 0.06,
+      "random_state": 42
+    },
+    "decisions": {
+      "isolation_decision_threshold": -0.04,
+      "thermal_temperature_threshold": 31.0,
+      "payload_temperature_threshold": 33.0,
+      "battery_voltage_threshold": 26.5,
+      "battery_current_threshold": 3.0
+    },
+    "telemanom": {
+      "feature_pipeline": "primary-value rolling statistics plus documented command inputs",
+      "robust_z_threshold": 6.0
+    },
+    "splits": {
+      "train": {
+        "scenario": "normal",
+        "normal_seeds": [
+          101,
+          102,
+          103,
+          104
+        ]
+      },
+      "validation": {
+        "runs": [
+          {
+            "scenario": "normal",
+            "seed": 201
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 202
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 203
+          }
+        ]
+      },
+      "test": {
+        "runs": [
+          {
+            "scenario": "normal",
+            "seed": 301
+          },
+          {
+            "scenario": "normal",
+            "seed": 302
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 303
+          },
+          {
+            "scenario": "thermal_fault",
+            "seed": 304
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 305
+          },
+          {
+            "scenario": "power_fault",
+            "seed": 306
+          }
+        ]
+      }
+    }
+  },
+  "split_separation": {
+    "train": {
+      "scenario": "normal",
+      "normal_seeds": [
+        101,
+        102,
+        103,
+        104
+      ]
+    },
+    "validation": {
+      "runs": [
+        {
+          "scenario": "normal",
+          "seed": 201
+        },
+        {
+          "scenario": "thermal_fault",
+          "seed": 202
+        },
+        {
+          "scenario": "power_fault",
+          "seed": 203
+        }
+      ]
+    },
+    "test": {
+      "runs": [
+        {
+          "scenario": "normal",
+          "seed": 301
+        },
+        {
+          "scenario": "normal",
+          "seed": 302
+        },
+        {
+          "scenario": "thermal_fault",
+          "seed": 303
+        },
+        {
+          "scenario": "thermal_fault",
+          "seed": 304
+        },
+        {
+          "scenario": "power_fault",
+          "seed": 305
+        },
+        {
+          "scenario": "power_fault",
+          "seed": 306
+        }
+      ]
+    },
+    "overlapping_seeds": false
+  },
+  "validation_metrics": {
+    "threshold": {
+      "point_precision": 1.0,
+      "point_recall": 0.555556,
+      "point_f1": 0.714286,
+      "event_recall": 1.0,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 0,
+      "false_alerts_per_1000_observations": 0.0,
+      "missed_events": 0,
+      "mean_detection_delay_observations": 32.0,
+      "median_detection_delay_observations": 32.0,
+      "maximum_detection_delay_observations": 34,
+      "ground_truth_events": 2,
+      "detected_events": 2,
+      "evaluated_observations": 540,
+      "evaluated_runs": 3,
+      "processing_time_ms": 1.023,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately"
+    },
+    "isolation_forest": {
+      "point_precision": 1.0,
+      "point_recall": 0.069444,
+      "point_f1": 0.12987,
+      "event_recall": 0.5,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 5,
+      "false_alerts_per_1000_observations": 9.259259,
+      "missed_events": 1,
+      "mean_detection_delay_observations": 7.0,
+      "median_detection_delay_observations": 7.0,
+      "maximum_detection_delay_observations": 7,
+      "ground_truth_events": 2,
+      "detected_events": 6,
+      "evaluated_observations": 540,
+      "evaluated_runs": 3,
+      "processing_time_ms": 26.196,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately"
+    },
+    "combined": {
+      "point_precision": 1.0,
+      "point_recall": 0.576389,
+      "point_f1": 0.731278,
+      "event_recall": 1.0,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 2,
+      "false_alerts_per_1000_observations": 3.703704,
+      "missed_events": 0,
+      "mean_detection_delay_observations": 20.0,
+      "median_detection_delay_observations": 20.0,
+      "maximum_detection_delay_observations": 33,
+      "ground_truth_events": 2,
+      "detected_events": 4,
+      "evaluated_observations": 540,
+      "evaluated_runs": 3,
+      "processing_time_ms": 50.562,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately"
+    }
+  },
+  "test_metrics": {
+    "threshold": {
+      "point_precision": 1.0,
+      "point_recall": 0.548611,
+      "point_f1": 0.70852,
+      "event_recall": 1.0,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 0,
+      "false_alerts_per_1000_observations": 0.0,
+      "missed_events": 0,
+      "mean_detection_delay_observations": 32.5,
+      "median_detection_delay_observations": 33.0,
+      "maximum_detection_delay_observations": 35,
+      "ground_truth_events": 4,
+      "detected_events": 4,
+      "evaluated_observations": 1080,
+      "evaluated_runs": 6,
+      "processing_time_ms": 2.017,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately"
+    },
+    "isolation_forest": {
+      "point_precision": 1.0,
+      "point_recall": 0.100694,
+      "point_f1": 0.182965,
+      "event_recall": 0.5,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 8,
+      "false_alerts_per_1000_observations": 7.407407,
+      "missed_events": 2,
+      "mean_detection_delay_observations": 6.0,
+      "median_detection_delay_observations": 6.0,
+      "maximum_detection_delay_observations": 6,
+      "ground_truth_events": 4,
+      "detected_events": 10,
+      "evaluated_observations": 1080,
+      "evaluated_runs": 6,
+      "processing_time_ms": 52.415,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately",
+      "model_fit_time_ms": 109.119
+    },
+    "combined": {
+      "point_precision": 1.0,
+      "point_recall": 0.555556,
+      "point_f1": 0.714286,
+      "event_recall": 1.0,
+      "false_positive_observations": 0,
+      "point_false_positive_rate": 0.0,
+      "false_confirmed_events": 0,
+      "false_alerts_per_1000_observations": 0.0,
+      "missed_events": 0,
+      "mean_detection_delay_observations": 32.0,
+      "median_detection_delay_observations": 32.5,
+      "maximum_detection_delay_observations": 35,
+      "ground_truth_events": 4,
+      "detected_events": 4,
+      "evaluated_observations": 1080,
+      "evaluated_runs": 6,
+      "processing_time_ms": 87.201,
+      "processing_time_scope": "Standalone test-run decision time; model fitting reported separately",
+      "model_fit_time_ms": 109.119
+    }
+  },
+  "test_processing_time_ms_by_method": {
+    "threshold": 2.017,
+    "isolation_forest": 52.415,
+    "combined": 87.201
+  }
+}

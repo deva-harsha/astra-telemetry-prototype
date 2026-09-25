@@ -1,4 +1,5 @@
 .venv/
+.venv*/
 backend/.venv/
 frontend/node_modules/
 frontend/dist/
@@ -6,4 +7,9 @@ __pycache__/
 *.pyc
 .env
 .env.*
+!backend/.env.example
+!frontend/.env.example
 .pytest_cache/
+data/external/
+reports/evaluation/latest.json
+reports/evaluation/latest.csv

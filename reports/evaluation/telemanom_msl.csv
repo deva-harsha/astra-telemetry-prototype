@@ -1,0 +1,4 @@
+detected_events,evaluated_observations,evaluated_runs,event_recall,false_alerts_per_1000_observations,false_confirmed_events,false_positive_observations,ground_truth_events,maximum_detection_delay_observations,mean_detection_delay_observations,median_detection_delay_observations,method,missed_events,point_f1,point_false_positive_rate,point_precision,point_recall,processing_time_ms,processing_time_scope
+31,6940,3,0.666667,3.89049,27,1418,6,17,5.75,3.5,threshold,2,0.251151,0.226192,0.174622,0.447094,2.091,Standalone end-to-end decision time including training for selected channels
+9,6940,3,0.333333,1.008646,7,10,6,9,4.5,4.5,isolation_forest,4,0.026087,0.001595,0.473684,0.013413,451.278,Standalone end-to-end decision time including training for selected channels
+37,6940,3,0.833333,4.610951,32,1426,6,43,13.2,6.0,combined,1,0.256133,0.227468,0.177624,0.459016,446.523,Standalone end-to-end decision time including training for selected channels

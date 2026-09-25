@@ -1,0 +1,47 @@
+{
+  "dataset_version": "astra-simulator-v1",
+  "observations": 180,
+  "rolling_window": 5,
+  "persistence_length": 3,
+  "event_matching_tolerance": 2,
+  "model": {
+    "type": "IsolationForest",
+    "n_estimators": 100,
+    "contamination": 0.06,
+    "random_state": 42
+  },
+  "decisions": {
+    "isolation_decision_threshold": -0.04,
+    "thermal_temperature_threshold": 31.0,
+    "payload_temperature_threshold": 33.0,
+    "battery_voltage_threshold": 26.5,
+    "battery_current_threshold": 3.0
+  },
+  "telemanom": {
+    "feature_pipeline": "primary-value rolling statistics plus documented command inputs",
+    "robust_z_threshold": 6.0
+  },
+  "splits": {
+    "train": {
+      "scenario": "normal",
+      "normal_seeds": [101, 102, 103, 104]
+    },
+    "validation": {
+      "runs": [
+        {"scenario": "normal", "seed": 201},
+        {"scenario": "thermal_fault", "seed": 202},
+        {"scenario": "power_fault", "seed": 203}
+      ]
+    },
+    "test": {
+      "runs": [
+        {"scenario": "normal", "seed": 301},
+        {"scenario": "normal", "seed": 302},
+        {"scenario": "thermal_fault", "seed": 303},
+        {"scenario": "thermal_fault", "seed": 304},
+        {"scenario": "power_fault", "seed": 305},
+        {"scenario": "power_fault", "seed": 306}
+      ]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "protocol_version": "astra-phase1c-v2",
+  "fit_fraction": 0.7,
+  "feature_set": "rolling",
+  "rolling_window": 10,
+  "persistence_length": 5,
+  "robust_z_multiplier": 4.0,
+  "isolation_contamination": 0.02,
+  "isolation_estimators": 100,
+  "isolation_validation_quantile": 0.01,
+  "combined_rule": "or",
+  "event_matching_tolerance": 2,
+  "random_state": 42,
+  "near_constant_epsilon": 1e-08,
+  "frozen": true,
+  "selection_basis": "Feature ablation followed by a one-factor parameter search. Selection uses normal public train-validation false alerts and separately labelled synthetic validation sensitivity; no official test labels or results used",
+  "selected_configuration_id": "P02",
+  "selected_feature_ablation": "rolling",
+  "normal_validation_point_fpr": 0.004482,
+  "synthetic_validation_point_f1": 0.827609,
+  "synthetic_validation_event_recall": 1.0,
+  "features_retained_by_definition": [
+    "raw",
+    "rolling_mean",
+    "rolling_std",
+    "rolling_slope",
+    "missing"
+  ],
+  "event_matching_rule": "Detected event start must be inside a labelled interval or within tolerance; pre-existing alerts outside tolerance do not match; tolerated early starts have zero delay",
+  "configuration_sha256": "1749b3b56198cf9d3f016a2c690354e2f48cf5d39b4e8810fa59fbfb2e7f46e2"
+}

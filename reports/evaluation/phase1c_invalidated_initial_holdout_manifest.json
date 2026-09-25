@@ -1,0 +1,43 @@
+{
+  "selection_rule": "For each mission, exclude development channels, rank remaining channel IDs by SHA-256 of 'astra-phase1c-v1:<mission>:<channel>', and take the first 10",
+  "selected_channels": {
+    "SMAP": [
+      "G-3",
+      "G-7",
+      "A-9",
+      "E-1",
+      "F-3",
+      "A-8",
+      "E-9",
+      "E-6",
+      "D-4",
+      "E-2"
+    ],
+    "MSL": [
+      "P-10",
+      "D-15",
+      "T-4",
+      "M-5",
+      "S-2",
+      "M-6",
+      "M-7",
+      "M-2",
+      "T-8",
+      "F-5"
+    ]
+  },
+  "excluded_development_channels": {
+    "SMAP": [
+      "A-1",
+      "A-2",
+      "A-3"
+    ],
+    "MSL": [
+      "C-1",
+      "C-2",
+      "D-14"
+    ]
+  },
+  "configuration_sha256": "bbb4157d27ba929526c48b040cd6524c6df26f54378dc48011f4835d678533d6",
+  "performance_not_calculated_when_manifest_written": true
+}

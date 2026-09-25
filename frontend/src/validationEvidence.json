@@ -1,0 +1,24 @@
+{
+  "summary": {
+    "backend_tests_passed": 31,
+    "public_channels_loaded": 81,
+    "approaches_compared": 3,
+    "development_channels": 6,
+    "holdout_channels": 20,
+    "frozen_configuration": "1749b3b56198cf9d3f016a2c690354e2f48cf5d39b4e8810fa59fbfb2e7f46e2"
+  },
+  "methods": [
+    {"method": "Threshold", "micro_f1": 0.328218, "macro_f1": 0.139126, "event_recall": 0.461538, "point_fpr": 0.177143, "false_alerts_per_1000": 1.693267},
+    {"method": "Isolation Forest", "micro_f1": 0.220356, "macro_f1": 0.111960, "event_recall": 0.384615, "point_fpr": 0.074910, "false_alerts_per_1000": 3.647729},
+    {"method": "Combined", "micro_f1": 0.347309, "macro_f1": 0.179961, "event_recall": 0.500000, "point_fpr": 0.182397, "false_alerts_per_1000": 2.413806}
+  ],
+  "conclusion": "The combined detector improved aggregate F1 and event recall but increased false alerts. The simpler threshold baseline remains the recommended operational candidate.",
+  "disclaimer": "These are research-prototype results on anonymized public telemetry, not operational spacecraft-validation results.",
+  "limitations": [
+    "Telemanom telemetry is anonymized and pre-scaled upstream.",
+    "Public training arrays have no official interval labels.",
+    "The twenty-channel frozen holdout is not an operational qualification.",
+    "The public-data evaluation is offline and is not a live telemetry stream."
+  ],
+  "source": "reports/evaluation/PHASE1C_RESULTS.md"
+}

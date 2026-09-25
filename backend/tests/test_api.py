@@ -63,3 +63,51 @@ def test_cors_restricted_to_local_vite():
     denied = client.options("/api/simulate", headers={"Origin": "http://example.com", "Access-Control-Request-Method": "POST"})
     assert allowed.headers["access-control-allow-origin"] == "http://localhost:5173"
     assert "access-control-allow-origin" not in denied.headers
+
+
+def test_api_returns_explicit_ground_truth_without_replacing_detector_decision():
+    thermal = run("thermal_fault")
+    onset = thermal["metadata"]["fault_start_index"]
+    assert onset == 108
+    assert thermal["metadata"]["fault_start_timestamp"] == thermal["telemetry"][onset]["timestamp"]
+    assert thermal["telemetry"][onset]["fault_active"] is True
+    assert thermal["telemetry"][onset]["ground_truth_event_id"] == "thermal_fault-1"
+    assert isinstance(thermal["telemetry"][onset]["is_anomaly"], bool)
+    assert thermal["event"]["alert_confirmed_time"] is not None
+
+
+def test_event_field_is_backward_compatible_with_events_array():
+    data = run("thermal_fault")
+    assert data["events"]
+    assert data["event"] in data["events"]
+    assert data["metrics"]["detected_event_count"] == len(data["events"])
+
+
+def test_normal_scenario_has_empty_events_array():
+    data = run("normal")
+    assert data["events"] == []
+    assert data["event"] is None
+
+
+def test_event_identifiers_are_stable_and_fields_are_json_safe():
+    first = run("power_fault")
+    second = run("power_fault")
+    assert [event["event_id"] for event in first["events"]] == [event["event_id"] for event in second["events"]]
+    event = first["events"][0]
+    assert event["detector_method"].startswith("Live hybrid")
+    assert event["persistence_count"] == 3
+    assert event["threshold_status"] in {"confirmed", "not_confirmed"}
+    assert event["isolation_forest_status"] in {"confirmed", "not_confirmed"}
+    json.dumps(event)
+
+
+def test_simulator_data_quality_is_calculated_from_response_data():
+    quality = run("normal")["data_quality"]
+    assert quality == {
+        "timestamp_continuity": True,
+        "missing_value_count": 0,
+        "telemetry_gap_count": 0,
+        "stale_observation_count": 0,
+        "available_channels": 8,
+        "data_source": "ASTRA deterministic simulator",
+    }

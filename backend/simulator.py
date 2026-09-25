@@ -56,4 +56,14 @@ def simulate(scenario: Scenario, points: int, seed: int) -> pd.DataFrame:
     start = datetime(2026, 1, 1, 0, 0, tzinfo=timezone.utc)
     frame = pd.DataFrame(data)
     frame.insert(0, "timestamp", [start + timedelta(minutes=i) for i in range(points)])
+    has_fault = scenario != "normal"
+    fault_start = start + timedelta(minutes=onset) if has_fault else None
+    frame["fault_active"] = has_fault & (frame.index >= onset)
+    frame["fault_type"] = scenario if has_fault else None
+    frame["injected_subsystem"] = (
+        "Thermal" if scenario == "thermal_fault" else "Power" if scenario == "power_fault" else None
+    )
+    frame["fault_start_index"] = onset if has_fault else None
+    frame["fault_start_timestamp"] = fault_start
+    frame["ground_truth_event_id"] = [f"{scenario}-1" if has_fault and i >= onset else None for i in range(points)]
     return frame

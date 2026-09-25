@@ -1,0 +1,4 @@
+detected_events,evaluated_observations,evaluated_runs,event_recall,false_alerts_per_1000_observations,false_confirmed_events,false_positive_observations,ground_truth_events,maximum_detection_delay_observations,mean_detection_delay_observations,median_detection_delay_observations,method,missed_events,model_fit_time_ms,point_f1,point_false_positive_rate,point_precision,point_recall,processing_time_ms,processing_time_scope
+4,1080,6,1.0,0.0,0,0,4,35,32.5,33.0,threshold,0,,0.70852,0.0,1.0,0.548611,2.017,Standalone test-run decision time; model fitting reported separately
+10,1080,6,0.5,7.407407,8,0,4,6,6.0,6.0,isolation_forest,2,109.119,0.182965,0.0,1.0,0.100694,52.415,Standalone test-run decision time; model fitting reported separately
+4,1080,6,1.0,0.0,0,0,4,35,32.0,32.5,combined,0,109.119,0.714286,0.0,1.0,0.555556,87.201,Standalone test-run decision time; model fitting reported separately
