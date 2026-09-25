@@ -210,4 +210,5 @@ Environment variables:
 
 Release instructions and verified boundaries are in `docs/DEMO_RUNBOOK.md`, `docs/TECHNICAL_FACTS.md`, `docs/RELEASE_CHECKLIST.md`, and `docs/WORDING_AUDIT.md`.
 #   a s t r a - 2 -  
+ #   a s t r a - n e w  
  
