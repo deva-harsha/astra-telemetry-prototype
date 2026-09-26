@@ -38,3 +38,14 @@ Use these claims exactly. ASTRA is a research prototype and judge-facing wording
 - Validated or endorsed by NASA, ESA or ISRO
 - Production deep-learning detector
 - Proven mission-safety performance
+
+
+## Phase 6 claim additions
+
+### Safe claim
+
+> ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only.
+
+### Prohibited claim
+
+> ASTRA can analyse any spacecraft telemetry file.

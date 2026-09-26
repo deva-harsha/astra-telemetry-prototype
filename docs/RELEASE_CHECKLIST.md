@@ -77,3 +77,20 @@
 - After Phase 3: 614.98 kB JavaScript (182.83 kB gzip); Vite warning remains.
 - Decision: retain the single main chunk because Recharts is core dashboard content and splitting it only defers the required telemetry interface.
 
+
+
+## Phase 6 recorded import
+
+- [x] CSV extension, 10 MB and 50,000-row limits enforced
+- [x] Empty files, duplicate headers and unusable timestamps rejected
+- [x] Formula-like cells treated as non-numeric text
+- [x] Filenames sanitized and never used as filesystem paths
+- [x] Missing, duplicate, out-of-order, gap and constant-channel checks
+- [x] One explicit `astra-sim-v1@1.0` detector profile
+- [x] Unknown and partial mappings remain visualisation-only
+- [x] Visualisation-only replay has no detector, risk or health conclusions
+- [x] Source switching clears replay, event selection, reviews and import state
+- [x] JSON export includes bounded provenance without full telemetry
+- [x] Investigation report contains the exact disclaimer and print stylesheet
+- [x] Normal and fault CSVs are labelled ASTRA-generated demonstration data
+- [x] Existing simulation and frozen-evidence regression tests remain active
