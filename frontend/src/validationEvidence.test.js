@@ -25,5 +25,8 @@ test('LSTM is evidence only and is absent from live controls', () => {
   assert.doesNotMatch(scenarioBlock, /lstm/i)
   assert.doesNotMatch(controlBlock, /lstm/i)
   assert.doesNotMatch(liveStack, /pytorch|lstm/i)
+  assert.doesNotMatch(appSource, /Enable LSTM/i)
+  assert.match(appSource, /Open Phase 4 Validation Evidence/)
+  assert.match(appSource, /not loaded by the production prototype/i)
   assert.match(appSource, /NOT SELECTED FOR LIVE INTEGRATION/)
 })

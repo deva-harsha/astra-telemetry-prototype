@@ -53,6 +53,11 @@ def test_compatible_fault_demo_reproduces_persistent_event():
     result = analyse(simulator_csv("power_fault"))
     assert result["compatibility"] == "compatible"
     assert any(event["affected_subsystem"] == "Power" for event in result["events"])
+    assert all("detector_reasoning" in point for point in result["telemetry"])
+    assert all(event["detector_reasoning"]["final_decision"]["confirmed"] for event in result["events"])
+    encoded = json.dumps(result).lower()
+    for unsupported_metric in ("precision", "recall", "accuracy", "false_positive", "false_negative"):
+        assert unsupported_metric not in encoded
 
 
 def test_visualisation_only_csv_never_creates_detector_conclusions():

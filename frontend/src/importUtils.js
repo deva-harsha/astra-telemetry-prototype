@@ -101,6 +101,13 @@ export function buildInvestigationReport({ event, missionIdentifier, source, sou
     field('Isolation Forest status', event.isolation_forest_status),
     field('Persistence', `${event.persistence_count} consecutive observations`),
     field('Final decision', event.final_decision),
+    ...(event.detector_reasoning ? [
+      field('Threshold evidence', event.detector_reasoning.threshold.violations.map((item) => `${item.channel}: ${item.value} ${item.operator} ${item.limit}`).join('; ') || 'No configured limit crossing'),
+      field('Isolation Forest decision score', `${event.detector_reasoning.isolation_forest.decision_score} (candidate below ${event.detector_reasoning.isolation_forest.candidate_threshold}; not a probability)`),
+      field('Trend evidence', event.detector_reasoning.trend.signals.map((item) => `${item.channel} ${item.direction}`).join(', ') || 'No corroborating trend'),
+      field('Persistence evidence', `${event.detector_reasoning.persistence.current_count} of ${event.detector_reasoning.persistence.required_count}`),
+      field('Confirmation logic', event.detector_reasoning.final_decision.logic),
+    ] : []),
   ].join('')
   const qualityText = quality
     ? `Missing values: ${quality.missing_value_count ?? 0}; duplicate timestamps: ${quality.duplicate_timestamp_count ?? 0}; out-of-order timestamps: ${quality.out_of_order_timestamp_count ?? 0}; estimated gaps: ${quality.estimated_gap_count ?? quality.telemetry_gap_count ?? 0}.`
@@ -136,6 +143,7 @@ ${field('Contributing channels', event.contributing_channels.join(', '))}
 <h2>What changed</h2><p>${escapeHtml(event.explanation)}</p>
 <h2>Supporting evidence</h2><p>${escapeHtml(event.supporting_evidence)}</p>
 <h2>Detector evidence</h2><dl class="grid">${evidence}</dl>
+${event.detector_reasoning ? `<h2>Detection reasoning</h2><p>${escapeHtml(event.detector_reasoning.explanation)}</p>` : ''}
 <h2>Data quality</h2><p>${escapeHtml(qualityText)}</p>
 <h2>Operator review</h2><dl class="grid">
 ${field('Acknowledged', review?.acknowledged ? 'Yes' : 'No')}

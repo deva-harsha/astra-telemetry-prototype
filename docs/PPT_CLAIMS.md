@@ -20,6 +20,8 @@ Use these claims exactly. ASTRA is a research prototype and judge-facing wording
 - ASTRA groups persistent events, shows supporting evidence, requests operator review and exports a labelled JSON event report.
 - The live prototype uses fixed operating thresholds, Isolation Forest corroboration, trend checks and three-observation persistence on simulated telemetry.
 - Deep learning was evaluated, not blindly deployed.
+- ASTRA exposes the genuine threshold, Isolation Forest, trend and persistence states used by its live hybrid decision.
+- The Detector Comparison Lab compares production-compatible candidate outputs on the same telemetry without changing the operator event result.
 
 ## Claims requiring qualification
 
@@ -33,6 +35,8 @@ Use these claims exactly. ASTRA is a research prototype and judge-facing wording
 | Public telemetry validation | "This is an offline research evaluation on anonymized Telemanom data with frozen splits, not operational validation." |
 | Real time | "The browser progressively replays a completed 180-observation backend batch; there is no live spacecraft stream." |
 | Explainable alert | "ASTRA shows deterministic contributing signals and detector evidence; it does not confirm root cause." |
+| Detector agreement | "Agreement shows that detector candidates matched on this telemetry; it does not establish correctness or accuracy." |
+| Synthetic comparison | "Timing is measured against deterministic ASTRA-injected faults and does not represent public mission performance." |
 
 ## Prohibited claims
 

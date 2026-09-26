@@ -9,6 +9,69 @@ Severity = Literal["normal", "low", "medium", "high"]
 EventStatus = Literal["active", "resolved"]
 
 
+class ThresholdViolation(BaseModel):
+    channel: str
+    value: float
+    operator: Literal[">", "<"]
+    limit: float
+
+
+class ThresholdEvidence(BaseModel):
+    breach_count: int
+    channels: list[str]
+    violations: list[ThresholdViolation]
+    state: Literal["normal", "candidate"]
+    confirmed_by_persistence: bool
+
+
+class IsolationForestEvidence(BaseModel):
+    unusual: bool
+    anomaly_score: float = Field(description="Display index from 0 to 100; not a probability")
+    decision_score: float = Field(description="Isolation Forest decision score; lower values are more unusual")
+    candidate_threshold: float
+    training_observations: int
+    initial_training_fraction: float
+    model_state: Literal["normal", "candidate"]
+    confirmed_by_persistence: bool
+    explanation: str
+
+
+class TrendSignal(BaseModel):
+    channel: str
+    direction: Literal["rising", "falling"]
+
+
+class TrendEvidence(BaseModel):
+    corroborated: bool
+    signals: list[TrendSignal]
+    window_observations: int
+    state: Literal["absent", "supporting"]
+
+
+class PersistenceEvidence(BaseModel):
+    current_count: int
+    required_count: int
+    confirmed: bool
+    confirmation_observation: int | None
+    reset: bool
+
+
+class FinalDecisionEvidence(BaseModel):
+    candidate: bool
+    confirmed: bool
+    logic: str
+
+
+class DetectorReasoning(BaseModel):
+    observation_index: int
+    threshold: ThresholdEvidence
+    isolation_forest: IsolationForestEvidence
+    trend: TrendEvidence
+    persistence: PersistenceEvidence
+    final_decision: FinalDecisionEvidence
+    explanation: str
+
+
 class SimulationRequest(BaseModel):
     scenario: Scenario = "normal"
     points: int = Field(default=180, ge=60, le=1000)
@@ -36,6 +99,7 @@ class TelemetryPoint(BaseModel):
     fault_start_index: int | None = None
     fault_start_timestamp: datetime | None = None
     ground_truth_event_id: str | None = None
+    detector_reasoning: DetectorReasoning
 
 
 class Event(BaseModel):
@@ -57,6 +121,7 @@ class Event(BaseModel):
     persistence_count: int
     final_decision: str
     operator_review_message: str
+    detector_reasoning: DetectorReasoning | None = None
 
 
 class DataQuality(BaseModel):

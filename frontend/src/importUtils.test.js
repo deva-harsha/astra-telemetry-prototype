@@ -13,6 +13,14 @@ const event = {
   explanation: 'Voltage fell.', supporting_evidence: 'Four observations changed.',
   detector_method: 'Live hybrid', threshold_status: 'confirmed', isolation_forest_status: 'not_confirmed',
   persistence_count: 3, final_decision: 'persistent event confirmed',
+  detector_reasoning: {
+    threshold: { violations: [{ channel: '<battery>', value: 25, operator: '<', limit: 26.5 }] },
+    isolation_forest: { decision_score: -0.1, candidate_threshold: -0.04 },
+    trend: { signals: [{ channel: 'battery_voltage', direction: 'falling' }] },
+    persistence: { current_count: 3, required_count: 3 },
+    final_decision: { logic: 'candidate <script>logic</script>' },
+    explanation: 'Reasoning <img src=x onerror=alert(1)>',
+  },
 }
 
 const importResult = {
@@ -84,6 +92,7 @@ test('JSON export contains bounded provenance and no full telemetry', () => {
   assert.equal(report.import_provenance.sanitized_filename, 'recorded.csv')
   assert.equal(report.import_provenance.file_hash_sha256, 'abc123')
   assert.equal(report.import_provenance.mapping_profile, 'astra-sim-v1@1.0')
+  assert.deepEqual(report.detector_reasoning, event.detector_reasoning)
   assert.equal('telemetry' in report, false)
   assert.doesNotMatch(JSON.stringify(report), /battery_voltage":28/)
 })
@@ -102,5 +111,8 @@ test('investigation report is escaped, complete and print friendly', () => {
   assert.match(html, /@media print/)
   assert.doesNotMatch(html, /<script>unsafe<\/script>/)
   assert.match(html, /&lt;script&gt;unsafe&lt;\/script&gt;/)
+  assert.doesNotMatch(html, /<img src=x/)
+  assert.match(html, /Reasoning &lt;img src=x onerror=alert\(1\)&gt;/)
+  assert.match(html, /candidate &lt;script&gt;logic&lt;\/script&gt;/)
 })
 

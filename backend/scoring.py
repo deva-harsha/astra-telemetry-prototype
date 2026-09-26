@@ -1,6 +1,7 @@
 import pandas as pd
 
 from .schemas import Event
+from .reasoning import candidate_streaks, reasoning_for_row
 
 
 LIVE_DETECTOR_METHOD = "Live hybrid: fixed operating thresholds plus Isolation Forest with trend corroboration"
@@ -50,6 +51,9 @@ def score(frame: pd.DataFrame, persistence: int = 3) -> tuple[pd.DataFrame, Even
     out["confirmed_threshold_event"] = persistence_mask(out["threshold_candidate"], persistence)
     out["confirmed_model_event"] = persistence_mask(out["isolation_candidate"], persistence)
     out["confirmed_combined_event"] = persistence_mask(out["combined_candidate"], persistence)
+    out["threshold_candidate_streak"], _ = candidate_streaks(out["threshold_candidate"])
+    out["isolation_candidate_streak"], _ = candidate_streaks(out["isolation_candidate"])
+    out["combined_candidate_streak"], out["combined_candidate_reset"] = candidate_streaks(out["combined_candidate"])
     persistent = out["confirmed_combined_event"].tolist()
 
     risks: list[float] = []
@@ -124,6 +128,7 @@ def score(frame: pd.DataFrame, persistence: int = 3) -> tuple[pd.DataFrame, Even
             persistence_count=persistence,
             final_decision="persistent event confirmed",
             operator_review_message="Review the contributing telemetry and spacecraft context before taking action. This prototype does not confirm a root cause.",
+            detector_reasoning=reasoning_for_row(out.iloc[confirmed_start], confirmed_start, persistence),
         ))
 
     severity_rank = {"normal": 0, "low": 1, "medium": 2, "high": 3}

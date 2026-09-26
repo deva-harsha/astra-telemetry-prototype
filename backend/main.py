@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .detector import detect
 from .importer import ASTRA_PROFILE, ImportValidationError, MAX_FILE_BYTES, parse_mapping, process_recorded_csv
+from .reasoning import reasoning_for_row
 from .schemas import DataQuality, Metadata, Metrics, SimulationRequest, SimulationResponse, TelemetryPoint
 from .scoring import score
 from .simulator import CHANNELS, UNITS, simulate
@@ -130,8 +131,9 @@ def run_simulation(request: SimulationRequest) -> SimulationResponse:
             "fault_start_index": None if pd.isna(row.fault_start_index) else int(row.fault_start_index),
             "fault_start_timestamp": row.fault_start_timestamp,
             "ground_truth_event_id": None if pd.isna(row.ground_truth_event_id) else str(row.ground_truth_event_id),
+            "detector_reasoning": reasoning_for_row(row, index),
         })
-        for row in scored.itertuples()
+        for index, row in enumerate(scored.itertuples())
     ]
     final_risk = max((point.risk_score for point in telemetry), default=0)
     onset = None if request.scenario == "normal" else int(request.points * 0.6)
