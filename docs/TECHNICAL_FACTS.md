@@ -12,6 +12,7 @@
 - **Simulated telemetry demonstration:** fixed operating thresholds plus Isolation Forest only when thermal or power trends corroborate it, followed by three consecutive candidate observations for confirmation.
 - **Public telemetry research evaluation:** offline Telemanom SMAP/MSL comparison of robust threshold, Isolation Forest and combined methods.
 - **Phase 1C recommendation:** robust threshold baseline. The frozen configuration hash is `1749b3b56198cf9d3f016a2c690354e2f48cf5d39b4e8810fa59fbfb2e7f46e2`.
+- **Phase 4 experiment:** offline PyTorch LSTM Autoencoder using `value_0`, 20-observation windows and 12,961 parameters. It failed the predeclared integration gate and is not live.
 - **Planned mission integration:** future work requiring mission-specific limits, interfaces and qualification.
 
 ## Data and evaluation design
@@ -32,6 +33,27 @@
 
 The combined method improved aggregate F1 and event recall while increasing false alerts. It did not satisfy the predeclared selection rule, so the simpler threshold baseline remains recommended.
 
+## Phase 4 same-holdout metrics
+
+Phase 4 used nine unseen public telemetry channels. These values must be compared within Phase 4, not against Phase 1C's different 20-channel holdout.
+
+| Method | Macro F1 | Event recall | False alerts/1,000 | Median delay |
+|---|---:|---:|---:|---:|
+| Threshold | 0.067270 | 0.461538 | 4.046660 | 64 |
+| Isolation Forest | 0.116458 | 0.461538 | 0.626947 | 66 |
+| Combined | 0.160782 | 0.615385 | 4.141652 | 64 |
+| LSTM Autoencoder | 0.035718 | 0.307692 | 0.854928 | 121 |
+
+The LSTM passed false-alert, practical-inference and multiple-channel checks. It failed the macro-F1 improvement and event-recall checks, so the overall gate failed. It remains completed offline research evidence.
+
+## Technology boundaries
+
+**Live prototype:** React, Vite, Recharts, FastAPI, Uvicorn, Python, scikit-learn Isolation Forest, fixed operating thresholds, trend corroboration, three-observation persistence and simulated multi-subsystem telemetry.
+
+**Offline research evaluation:** public Telemanom SMAP/MSL telemetry, robust threshold, Isolation Forest, combined detector, PyTorch LSTM Autoencoder, frozen train/development/holdout protocols and precision, recall, F1, false-alert and detection-delay metrics.
+
+Deep learning evaluated, not blindly deployed. ASTRA selects models based on measured mission-safety trade-offs rather than model complexity.
+
 ## Bundle review
 
 The pre-hardening production JavaScript bundle was 613.30 kB (182.31 kB gzip), with a Vite chunk-size warning. A Rollup module contribution inspection identified Recharts and its charting dependencies as the main rendered contribution; Lucide's large installed source tree is tree-shaken to imported icons. Charting is primary dashboard content, so deferring it would hide the core telemetry view and only move the warning into another chunk. The Phase 3 changes keep one predictable bundle rather than add risky loading states. Final build size is recorded in `RELEASE_CHECKLIST.md`.
@@ -48,4 +70,4 @@ The pre-hardening production JavaScript bundle was 613.30 kB (182.31 kB gzip), w
 
 ## Unsupported claims
 
-Avoid: predictive maintenance, failure prediction, live spacecraft data, autonomous control, confirmed root-cause diagnosis, proven accuracy, NASA validation and operational readiness. No LSTM or other deep-learning model is implemented.
+Avoid: predictive maintenance, failure prediction, live spacecraft data, autonomous control, confirmed root-cause diagnosis, proven accuracy, NASA validation and operational readiness. The LSTM is implemented for offline research only and is not a production detector.

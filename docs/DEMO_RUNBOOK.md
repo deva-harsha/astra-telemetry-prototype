@@ -23,12 +23,18 @@ Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. Confi
 
 | Time | Action | Point to make |
 |---|---|---|
-| 0:00–0:30 | State the boundary and show the three-step guide. | Simulated telemetry demonstration; ground-based decision support; human review required; no spacecraft command access. |
-| 0:30–1:15 | Choose **Normal Operation**, start at 4× speed, and move through subsystem tabs. | The control run has no injected fault. Values remain available in physical units; the chart scales signals only for comparison. |
-| 1:15–1:40 | Pause, resume, and show Run Analysis Time and data quality. | Playback controls affect the browser replay. Analysis time is genuine backend execution time. |
-| 1:40–2:55 | Reset, choose **Power Fault**, start at 4× speed, and wait for confirmation. | The simulated voltage/current pattern must persist for three candidate observations before an event is confirmed. |
-| 2:55–3:35 | Select an event, jump to it, inspect contributing signals, timeline and detector evidence. | The evidence supports review; it does not confirm a root cause. |
-| 3:35–4:00 | Add a session note, acknowledge, export JSON, and open Validation evidence. | Review state is browser-session data. The public benchmark is offline initial research evidence, not operational validation. |
+| 0:00–0:25 | State the problem and ASTRA boundary. | Ground teams need persistent anomaly evidence with human review. This is simulated, ground-based decision support with no spacecraft command path. |
+| 0:25–1:05 | Choose **Power Fault**, start at 4× speed and show the replay. | Voltage and current behaviour is injected deterministically. Raw values remain in tooltips; the chart alone is normalized for comparison. |
+| 1:05–1:40 | Pause and resume, then wait for event confirmation. | The live prototype uses fixed limits, Isolation Forest corroboration, trends and three consecutive candidate observations. |
+| 1:40–2:25 | Select each confirmed event and use the graph jump. Inspect contributing signals, timeline and detector evidence. | ASTRA shows what contributed and why review was requested; it does not confirm root cause. |
+| 2:25–2:55 | Acknowledge an event, add a short note and export JSON. | Review state is browser-session data; the export is a labelled prototype event report. |
+| 2:55–3:25 | Open **Validation evidence** and show Phase 1C. | This is a frozen 20-channel offline public-data baseline evaluation, separate from the simulator. |
+| 3:25–3:50 | Show Phase 4, its same-holdout table and failed gate. | The LSTM reduced false alerts but missed more events and detected matched events later. It was evaluated and not selected for live use. |
+| 3:50–4:00 | Give the final contribution statement. | ASTRA connects monitoring, persistence, supporting evidence and human review, and selects models using measured trade-offs. |
+
+### Final spoken conclusion
+
+> ASTRA's contribution is not simply one anomaly-detection model. It is a transparent workflow that connects telemetry monitoring, persistent-event detection, supporting evidence and human review. We also evaluated deep learning, but retained only the approaches supported by our current evidence.
 
 ## Scenario details
 
@@ -52,11 +58,13 @@ Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. Confi
 - Risk and health scores are prototype heuristic indicators, not probabilities.
 - Fixed limits, Isolation Forest corroboration and persistence contribute to the live simulator decision.
 - The Phase 1C public benchmark recommends robust thresholding; that configuration is frozen.
+- Phase 4 evaluated a PyTorch LSTM Autoencoder on a different nine-channel frozen holdout. It failed the integration gate and remains offline evidence.
+- Phase 1C and Phase 4 values must not be compared directly because their holdout channels differ.
 - Every alert requires human review.
 
 ## Claims to avoid
 
-Do not claim live spacecraft telemetry, autonomous control, exact failure prediction, confirmed root cause, NASA validation, proven accuracy, operational readiness or a deployed deep-learning model.
+Do not claim live spacecraft telemetry, autonomous control, exact failure prediction, confirmed root cause, NASA validation, proven accuracy, operational readiness or a production deep-learning detector.
 
 ## Backend fallback
 

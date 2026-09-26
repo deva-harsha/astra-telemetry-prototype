@@ -20,6 +20,9 @@
 - [x] Acknowledge, review, note and reset remain session-only
 - [x] JSON export is valid and labelled `ASTRA prototype event report`
 - [x] Validation Evidence expands and remains readable
+- [x] Phase 1C and Phase 4 evidence are visibly separated
+- [x] Phase 4 LSTM is labelled experimental and not live
+- [x] Failed and passed predeclared gates are visible in text
 - [x] Backend unavailable and Retry recovery states are clear
 
 ## Responsive and accessible review
@@ -41,6 +44,11 @@
 - [ ] `VITE_API_BASE_URL` contains the HTTPS backend origin and no secret
 - [ ] `ALLOWED_ORIGINS` contains comma-separated exact frontend origins
 - [x] Public dataset is not required for API startup
+- [x] Render installs only `backend/requirements.txt`
+- [x] Production requirements contain no PyTorch
+- [x] FastAPI imports while PyTorch is unavailable
+- [x] `.venv-dl` and `artifacts/models/` are ignored
+- [x] Trained model artifact is not required by frontend or API
 - [x] `.venv312`, `node_modules`, build output and real `.env` files are ignored
 - [ ] CORS succeeds from the deployed frontend and rejects unrelated origins
 
@@ -51,6 +59,17 @@
 - [ ] PPT link verified
 - [ ] Video link verified
 - [ ] Deployment smoke tests completed
+
+## Phase 5 evidence release
+
+- [x] Frozen Phase 1C report and manifest hashes are regression-tested
+- [x] Frozen Phase 4 report and manifest hashes are regression-tested
+- [x] Frontend evidence values are checked against structured report JSON
+- [x] No LSTM scenario or live detector control exists
+- [x] Normal simulation release contract remains unchanged
+- [x] Export utility regression test remains active
+- [x] Presenter claims and model-selection Q&A are documented
+- [x] No final holdout was re-run or overwritten
 
 ## Bundle record
 

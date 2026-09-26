@@ -1,24 +1,57 @@
 {
-  "summary": {
-    "backend_tests_passed": 31,
-    "public_channels_loaded": 81,
-    "approaches_compared": 3,
-    "development_channels": 6,
-    "holdout_channels": 20,
-    "frozen_configuration": "1749b3b56198cf9d3f016a2c690354e2f48cf5d39b4e8810fa59fbfb2e7f46e2"
+  "holdout_notice": "These experiments used different frozen holdouts. Values should be interpreted within each experiment, not compared directly across phases.",
+  "phase1c": {
+    "label": "Phase 1C — Public Baseline Evaluation",
+    "summary": {
+      "backend_tests_passed": 31,
+      "public_channels_loaded": 81,
+      "approaches_compared": 3,
+      "development_channels": 6,
+      "holdout_channels": 20,
+      "frozen_configuration": "1749b3b56198cf9d3f016a2c690354e2f48cf5d39b4e8810fa59fbfb2e7f46e2"
+    },
+    "methods": [
+      {"method": "Threshold", "micro_f1": 0.328218, "macro_f1": 0.139126, "event_recall": 0.461538, "point_fpr": 0.177143, "false_alerts_per_1000": 1.693267},
+      {"method": "Isolation Forest", "micro_f1": 0.220356, "macro_f1": 0.111960, "event_recall": 0.384615, "point_fpr": 0.074910, "false_alerts_per_1000": 3.647729},
+      {"method": "Combined", "micro_f1": 0.347309, "macro_f1": 0.179961, "event_recall": 0.500000, "point_fpr": 0.182397, "false_alerts_per_1000": 2.413806}
+    ],
+    "conclusion": "The combined detector improved aggregate F1 and event recall but increased false alerts. The simpler threshold baseline remains the recommended operational candidate.",
+    "disclaimer": "These are research-prototype results on anonymized public telemetry, not operational spacecraft-validation results.",
+    "limitations": [
+      "Telemanom telemetry is anonymized and pre-scaled upstream.",
+      "Public training arrays have no official interval labels.",
+      "The twenty-channel frozen holdout is not an operational qualification.",
+      "The public-data evaluation is offline and is not a live telemetry stream."
+    ],
+    "source": "reports/evaluation/phase1c_holdout_results.json"
   },
-  "methods": [
-    {"method": "Threshold", "micro_f1": 0.328218, "macro_f1": 0.139126, "event_recall": 0.461538, "point_fpr": 0.177143, "false_alerts_per_1000": 1.693267},
-    {"method": "Isolation Forest", "micro_f1": 0.220356, "macro_f1": 0.111960, "event_recall": 0.384615, "point_fpr": 0.074910, "false_alerts_per_1000": 3.647729},
-    {"method": "Combined", "micro_f1": 0.347309, "macro_f1": 0.179961, "event_recall": 0.500000, "point_fpr": 0.182397, "false_alerts_per_1000": 2.413806}
-  ],
-  "conclusion": "The combined detector improved aggregate F1 and event recall but increased false alerts. The simpler threshold baseline remains the recommended operational candidate.",
-  "disclaimer": "These are research-prototype results on anonymized public telemetry, not operational spacecraft-validation results.",
-  "limitations": [
-    "Telemanom telemetry is anonymized and pre-scaled upstream.",
-    "Public training arrays have no official interval labels.",
-    "The twenty-channel frozen holdout is not an operational qualification.",
-    "The public-data evaluation is offline and is not a live telemetry stream."
-  ],
-  "source": "reports/evaluation/PHASE1C_RESULTS.md"
+  "phase4": {
+    "label": "Phase 4 — Deep Learning Experiment",
+    "experiment": {
+      "model": "LSTM Autoencoder",
+      "framework": "PyTorch, CPU",
+      "parameters": 12961,
+      "input_window": 20,
+      "feature": "Anonymized primary telemetry value",
+      "evaluation": "Nine unseen public telemetry channels",
+      "frozen_configuration": "7e3b13fc8cb1c041422d9971a3824ccc6510b72344c1d33cff23d92cc6f2c0c4",
+      "status": "Experimental; not used by the live prototype"
+    },
+    "methods": [
+      {"method": "Threshold", "macro_f1": 0.067270, "event_recall": 0.461538, "false_alerts_per_1000": 4.046660, "median_delay": 64},
+      {"method": "Isolation Forest", "macro_f1": 0.116458, "event_recall": 0.461538, "false_alerts_per_1000": 0.626947, "median_delay": 66},
+      {"method": "Combined", "macro_f1": 0.160782, "event_recall": 0.615385, "false_alerts_per_1000": 4.141652, "median_delay": 64},
+      {"method": "LSTM Autoencoder", "macro_f1": 0.035718, "event_recall": 0.307692, "false_alerts_per_1000": 0.854928, "median_delay": 121}
+    ],
+    "gates": [
+      {"key": "macro_f1_gain", "label": "Macro F1 improves by at least 0.02", "passed": false},
+      {"key": "event_recall_not_lower", "label": "Event recall is not lower", "passed": false},
+      {"key": "false_alert_limit", "label": "False alerts stay within 125% of baseline", "passed": true},
+      {"key": "practical_inference", "label": "Inference remains practical", "passed": true},
+      {"key": "improvement_spans_multiple_channels", "label": "Improvement spans multiple channels", "passed": true}
+    ],
+    "overall_passed": false,
+    "conclusion": "The LSTM produced fewer false alerts but substantially lower sensitivity and longer median detection delay.",
+    "source": "reports/evaluation/phase4_lstm_holdout_results.json"
+  }
 }
