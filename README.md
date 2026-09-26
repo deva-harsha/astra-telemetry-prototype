@@ -136,7 +136,7 @@ GitHub Actions repeats backend tests on Windows with Python 3.12 and runs npm cl
 - Explanations identify evidence patterns and do not confirm root cause.
 - ASTRA does not communicate with or control a spacecraft.
 - The current API processes batches; the dashboard replay is not a live stream.
-- LSTM is not part of this phase.
+- The PyTorch LSTM Autoencoder is an offline Phase 4 experiment. It failed the predeclared integration gate and is not part of the live prototype.
 
 ## Phase 1C public-data calibration and holdout
 
@@ -209,6 +209,26 @@ Environment variables:
 | `PORT` | Backend | Supplied by Render | Port passed to Uvicorn by `render.yaml`. |
 
 Release instructions and verified boundaries are in `docs/DEMO_RUNBOOK.md`, `docs/TECHNICAL_FACTS.md`, `docs/RELEASE_CHECKLIST.md`, and `docs/WORDING_AUDIT.md`.
-#   a s t r a - 2 -  
- #   a s t r a - n e w  
- 
+
+## Phase 4 model-selection evidence
+
+The offline research stack evaluated robust thresholding, Isolation Forest, combined detection and a PyTorch LSTM Autoencoder using frozen train, development and holdout protocols on public Telemanom SMAP/MSL telemetry. The LSTM used a 20-observation input window, 12,961 parameters and the shared anonymized `value_0` feature.
+
+On the nine-channel Phase 4 holdout, the LSTM produced fewer false alerts than threshold and combined detection, but event recall fell to 0.307692 and median matched-event delay increased to 121 observations. It failed the predeclared macro-F1 and event-recall checks, so it was not selected for live integration.
+
+Phase 1C and Phase 4 use different frozen holdouts. Compare methods within each experiment only.
+
+Deep learning evaluated, not blindly deployed. ASTRA selects models based on measured mission-safety trade-offs rather than model complexity.
+
+For offline reproduction, create the isolated environment and install the add-on requirements:
+
+~~~powershell
+cd C:\ASTRA
+py -3.12 -m venv .venv-dl
+.\.venv-dl\Scripts\python.exe -m pip install -r backend\requirements.txt
+.\.venv-dl\Scripts\python.exe -m pip install -r backend\requirements-dl.txt
+~~~
+
+`backend/requirements-dl.txt` and `.venv-dl` are for offline experimentation only. Render installs only `backend/requirements.txt`; normal FastAPI startup neither requires nor imports PyTorch, and the trained model artifact is not deployed.
+
+See `docs/PPT_CLAIMS.md`, `docs/JUDGE_QA_MODEL_SELECTION.md` and `docs/PHASE5_RELEASE_REPORT.md` for presentation boundaries and the final selection rationale.
