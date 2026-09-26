@@ -1,5 +1,17 @@
 # ASTRA technical facts
 
+## Phase 8 detector reasoning contract
+
+- The exact hybrid candidate is `threshold_candidate OR (isolation_candidate AND (thermal_trend OR power_trend))`.
+- Three consecutive hybrid candidates are required for confirmation.
+- Per-observation `detector_reasoning` is derived from the same detector and scorer columns; it is not a second detector.
+- The Isolation Forest decision score is lower for more unusual observations. The 0–100 anomaly score is a display index, not a probability.
+- Threshold-only and Isolation-Forest-only persistence are comparison evidence. Hybrid confirmation remains the operational event source.
+- Visualisation-only uploads have no detector reasoning, scores or events. Compatible unlabelled uploads have no accuracy metrics.
+- The production application does not import or load PyTorch or the LSTM.
+
+Full logic and limits are documented in `docs/DETECTOR_REASONING.md`.
+
 ## Architecture
 
 - FastAPI/Pydantic API with deterministic NumPy/Pandas simulation and scikit-learn Isolation Forest.

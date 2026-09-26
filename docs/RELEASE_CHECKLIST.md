@@ -82,6 +82,22 @@
 
 Phase 7 is **locally verified but blocked from final release** until every unchecked production and submission item above is completed.
 
+## Phase 8 detector transparency
+
+- [x] Original Normal, Thermal and Power event and score outputs frozen before implementation
+- [x] Original fields, event IDs, timing, scores and scenario event counts regression-tested
+- [x] Per-observation evidence comes from existing detector and persistence state
+- [x] Live pipeline never shows confirmed before hybrid persistence confirms
+- [x] Threshold evidence contains genuine measured crossings and configured limits
+- [x] Isolation Forest score direction and non-probability boundary are documented
+- [x] Comparison Lab is read-only and leaves operator events unchanged
+- [x] Synthetic comparison is limited to ASTRA-generated labels
+- [x] Compatible unlabelled uploads show no accuracy metrics
+- [x] Visualisation-only uploads show no detector conclusions
+- [x] LSTM is offline, non-interactive and absent from production imports
+- [x] JSON and printable reports add optional escaped detector reasoning without full telemetry
+- [x] Frozen Phase 1C and Phase 4 hashes remain under regression protection
+
 ## Phase 5 evidence release
 
 - [x] Frozen Phase 1C report and manifest hashes are regression-tested

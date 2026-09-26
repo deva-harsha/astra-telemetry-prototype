@@ -261,3 +261,11 @@ Release documentation:
 - [Manual submission checklist](docs/MANUAL_SUBMISSION_CHECKLIST.md)
 - [Demonstration runbook](docs/DEMO_RUNBOOK.md)
 - [Presentation claims](docs/PPT_CLAIMS.md)
+
+## Phase 8 detector transparency
+
+Compatible telemetry responses append per-observation and per-event `detector_reasoning`. The dashboard uses it for a live **Threshold → Isolation Forest → Trend evidence → Persistence → Confirmed event** strip, selected-event detection reasoning and a read-only Detector Comparison Lab. These additions expose the existing decisions; they do not change events, scores or timing.
+
+The Comparison Lab shows Threshold-only, Isolation-Forest-only and existing Hybrid candidate and persistence outputs on the same telemetry. The Hybrid result remains the only source of operator events. Synthetic labels appear only for deterministic simulator scenarios. Unlabelled uploads never receive accuracy metrics, and visualisation-only uploads receive no detector conclusions.
+
+The LSTM remains a non-interactive offline research card. See [detector reasoning](docs/DETECTOR_REASONING.md) and the [Phase 8 report](docs/PHASE8_REPORT.md).

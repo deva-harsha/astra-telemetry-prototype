@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 
 from .detector import detect
+from .reasoning import reasoning_for_row
 from .scoring import score
 from .simulator import CHANNELS, UNITS
 
@@ -400,8 +401,9 @@ def process_recorded_csv(
                 "fault_start_index": None,
                 "fault_start_timestamp": None,
                 "ground_truth_event_id": None,
+                "detector_reasoning": reasoning_for_row(row, index),
             }
-            for row in scored.itertuples()
+            for index, row in enumerate(scored.itertuples())
         ]
         result["event"] = None if primary is None else primary.model_dump(mode="json")
         result["events"] = [event.model_dump(mode="json") for event in events]

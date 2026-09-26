@@ -35,6 +35,7 @@ export function buildPrototypeEventReport({ event, missionIdentifier, scenario, 
     },
     prototype_disclaimer: provenance ? 'Session-only ground-based decision-support prototype using uploaded recorded telemetry. Import compatibility is not operational qualification. It does not confirm root cause, predict failure time, or command a spacecraft.' : PROTOTYPE_DISCLAIMER,
   }
+  if (event.detector_reasoning) report.detector_reasoning = event.detector_reasoning
   if (provenance) report.import_provenance = provenance
   if (dataQuality) report.data_quality_summary = dataQuality
   return report

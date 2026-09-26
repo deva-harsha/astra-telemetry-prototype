@@ -73,9 +73,21 @@ def detect(
     out = frame.copy()
     out["isolation_decision_score"] = decision_score
     out["anomaly_score"] = anomaly_score
+    out["isolation_candidate_threshold"] = isolation_threshold
+    out["isolation_training_observations"] = int(len(frame) * 0.6)
+    out["isolation_training_fraction"] = 0.6
+    out["detector_window"] = window
 
-    out["thermal_threshold"] = (out.battery_temperature > thermal_temperature_threshold) | (out.payload_temperature > payload_temperature_threshold)
-    out["power_threshold"] = (out.battery_voltage < battery_voltage_threshold) | (out.battery_current > battery_current_threshold)
+    out["battery_temperature_limit"] = thermal_temperature_threshold
+    out["payload_temperature_limit"] = payload_temperature_threshold
+    out["battery_voltage_limit"] = battery_voltage_threshold
+    out["battery_current_limit"] = battery_current_threshold
+    out["battery_temperature_limit_breach"] = out.battery_temperature > thermal_temperature_threshold
+    out["payload_temperature_limit_breach"] = out.payload_temperature > payload_temperature_threshold
+    out["battery_voltage_limit_breach"] = out.battery_voltage < battery_voltage_threshold
+    out["battery_current_limit_breach"] = out.battery_current > battery_current_threshold
+    out["thermal_threshold"] = out.battery_temperature_limit_breach | out.payload_temperature_limit_breach
+    out["power_threshold"] = out.battery_voltage_limit_breach | out.battery_current_limit_breach
     out["threshold_breach"] = out.thermal_threshold | out.power_threshold
     out["thermal_trend"] = (
         features["battery_temperature_slope"] > 0.12

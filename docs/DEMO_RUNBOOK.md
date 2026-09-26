@@ -32,6 +32,15 @@ Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. Confi
 | 3:25–3:50 | Show Phase 4, its same-holdout table and failed gate. | The LSTM reduced false alerts but missed more events and detected matched events later. It was evaluated and not selected for live use. |
 | 3:50–4:00 | Give the final contribution statement. | ASTRA connects monitoring, persistence, supporting evidence and human review, and selects models using measured trade-offs. |
 
+### Detector transparency walkthrough
+
+1. Start Thermal Fault at 4× and point to the pipeline updating from normal to candidate, supporting and confirmed states.
+2. Select a genuine event and show **Why ASTRA confirmed this event**. Explain the measured limit crossings, Isolation Forest decision score, five-observation trend window and three-observation persistence.
+3. Open **Detector Comparison Lab**. Explain that its three methods use the same telemetry and that the existing Hybrid result remains the source of operator events.
+4. Show the synthetic injection timing disclaimer. Do not call it mission accuracy.
+5. Import a compatible demo CSV and show the unlabelled-ground-truth warning. Switch to a visualisation-only file and show that detector conclusions disappear.
+6. Show the LSTM offline card, then open Phase 4 evidence. Do not describe the LSTM as live or selectable.
+
 ### Final spoken conclusion
 
 > ASTRA’s contribution is not simply another anomaly-detection model; it connects telemetry monitoring, data-quality checks, persistent-event confirmation, supporting evidence, recorded-data replay and human review in one transparent workflow.
