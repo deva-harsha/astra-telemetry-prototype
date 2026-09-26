@@ -1,6 +1,8 @@
 # ASTRA
 
-ASTRA is a ground-based spacecraft telemetry anomaly-detection and operator-decision-support prototype. It does not connect to or control a spacecraft, predict an exact failure time, or confirm a root-cause diagnosis.
+ASTRA is a ground-based spacecraft telemetry decision-support prototype that detects persistent unusual behaviour, connects supporting signal evidence and helps operators investigate confirmed events.
+
+It does not connect to or control a spacecraft, predict a failure or exact failure time, confirm a root-cause diagnosis, or claim agency endorsement or operational validation.
 
 ## Reproducible Python 3.12 environment
 
@@ -244,4 +246,18 @@ Download the template and two ASTRA-generated demonstration files from the impor
 
 The import endpoint accepts raw CSV bytes at `POST /api/import/telemetry`; `GET /api/import/profile` exposes the supported profile. Event JSON export adds bounded provenance without embedding the uploaded dataset. **Print Report** creates an escaped, print-friendly investigation report that the browser can save as PDF.
 
-ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only. This does not mean ASTRA can analyse arbitrary spacecraft telemetry files.
+ASTRA supports validated import and replay of recorded telemetry that follows its prototype profile; other usable datasets remain visualisation-only. This does not mean ASTRA can analyse arbitrary spacecraft telemetry files.
+
+## Phase 7 release status
+
+The release candidate was verified locally on 2026-09-26: 75 backend tests passed, one optional PyTorch test was skipped, 13 frontend tests passed, lint passed, backend compilation passed, and the production frontend build passed. The approximately 643 kB JavaScript chunk warning remains a documented limitation because a late bundle restructure would add release risk without changing prototype capability.
+
+No deployment was performed during the Phase 7 freeze. Real Render and Vercel URLs are therefore not available and must not be inferred from the example environment files. Follow the deployment order and record the resulting URLs in [docs/PRODUCTION_SMOKE_TEST.md](docs/PRODUCTION_SMOKE_TEST.md).
+
+Release documentation:
+
+- [Final release record](docs/FINAL_RELEASE.md)
+- [Production smoke-test record](docs/PRODUCTION_SMOKE_TEST.md)
+- [Manual submission checklist](docs/MANUAL_SUBMISSION_CHECKLIST.md)
+- [Demonstration runbook](docs/DEMO_RUNBOOK.md)
+- [Presentation claims](docs/PPT_CLAIMS.md)

@@ -2,10 +2,11 @@
 
 ## Automated verification
 
-- [x] Backend tests pass
-- [x] Frontend utility tests pass
-- [x] Frontend lint passes
-- [x] Frontend production build passes
+- [x] Backend tests pass (75 passed, 1 optional PyTorch skip on 2026-09-26)
+- [x] Backend compilation passes
+- [x] Frontend utility tests pass (13 passed on 2026-09-26)
+- [x] Frontend lint passes (2026-09-26)
+- [x] Frontend production build passes (2026-09-26)
 - [x] `git diff --check` passes
 
 ## Local demonstration
@@ -56,9 +57,30 @@
 
 - [x] Git status reviewed; Phase 2 checkpoint status recorded
 - [x] No detector, telemetry, frozen configuration, holdout or audit artifact changed
+- [x] No virtual environment, uploaded telemetry, model artifact, dependency directory, build output, real environment file or temporary report is tracked
+- [x] Render and Vercel manifests reviewed against the production contract
 - [ ] PPT link verified
 - [ ] Video link verified
 - [ ] Deployment smoke tests completed
+
+## Phase 7 production gate
+
+- [x] Local API health and documentation return HTTP 200
+- [x] Local Normal run returns 180 observations and zero events
+- [x] Local Thermal and Power runs return 180 observations and two persistent events each
+- [x] Local CORS accepts `http://localhost:5173` and does not allow an unrelated origin
+- [x] Existing recorded-import, export, report and frozen-evidence regression tests pass
+- [x] Verified local thermal replay displays graph markers, contributing signals, event timeline, detector evidence and operator review
+- [ ] Real Render HTTPS URL recorded
+- [ ] Real Vercel HTTPS URL recorded
+- [ ] Exact production Vercel origin set in Render `ALLOWED_ORIGINS`
+- [ ] Production backend health and frontend-to-backend communication verified
+- [ ] External-browser JSON download completed and inspected
+- [ ] External-browser investigation report saved and inspected as PDF
+- [ ] Final production screenshots captured
+- [ ] Prototype, video, PPT and QR-code links verified with public-view permissions
+
+Phase 7 is **locally verified but blocked from final release** until every unchecked production and submission item above is completed.
 
 ## Phase 5 evidence release
 

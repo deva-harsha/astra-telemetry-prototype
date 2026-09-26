@@ -2,6 +2,14 @@
 
 Use these claims exactly. ASTRA is a research prototype and judge-facing wording must preserve that boundary.
 
+## Final submission wording
+
+> ASTRA is a ground-based spacecraft telemetry decision-support prototype that detects persistent unusual behaviour, connects supporting signal evidence and helps operators investigate confirmed events.
+
+> ASTRA’s contribution is not simply another anomaly-detection model; it connects telemetry monitoring, data-quality checks, persistent-event confirmation, supporting evidence, recorded-data replay and human review in one transparent workflow.
+
+> ASTRA supports validated import and replay of recorded telemetry that follows its prototype profile; other usable datasets remain visualisation-only.
+
 ## Safe claims
 
 - ASTRA includes a working simulated telemetry demonstration.
@@ -44,7 +52,7 @@ Use these claims exactly. ASTRA is a research prototype and judge-facing wording
 
 ### Safe claim
 
-> ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only.
+> ASTRA supports validated import and replay of recorded telemetry that follows its prototype profile; other usable datasets remain visualisation-only.
 
 ### Prohibited claim
 
