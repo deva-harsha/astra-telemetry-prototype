@@ -1,0 +1,83 @@
+{
+  "created_utc": "2026-09-25T19:19:17.912739+00:00",
+  "selection_rule": "Exclude development, Phase 1C final, invalidated Phase 1C, and Phase 4 debug-inspected channels; SHA-256 rank remaining IDs; select up to five per mission.",
+  "selected_channels": {
+    "MSL": [
+      "F-7",
+      "D-16",
+      "F-8",
+      "M-4"
+    ],
+    "SMAP": [
+      "P-7",
+      "D-7",
+      "G-1",
+      "E-13",
+      "B-1"
+    ]
+  },
+  "excluded_channels": {
+    "SMAP": [
+      "A-1",
+      "A-2",
+      "A-3",
+      "A-8",
+      "A-9",
+      "D-1",
+      "D-13",
+      "D-2",
+      "D-3",
+      "D-4",
+      "D-5",
+      "D-9",
+      "E-1",
+      "E-11",
+      "E-2",
+      "E-6",
+      "E-9",
+      "F-1",
+      "F-3",
+      "G-3",
+      "G-7",
+      "P-1",
+      "P-3"
+    ],
+    "MSL": [
+      "C-1",
+      "C-2",
+      "D-14",
+      "D-15",
+      "F-4",
+      "F-5",
+      "M-1",
+      "M-2",
+      "M-3",
+      "M-5",
+      "M-6",
+      "M-7",
+      "P-10",
+      "P-11",
+      "P-14",
+      "P-15",
+      "S-2",
+      "T-12",
+      "T-13",
+      "T-4",
+      "T-5",
+      "T-8",
+      "T-9"
+    ]
+  },
+  "phase4_debug_inspected_channels": {
+    "SMAP": [],
+    "MSL": []
+  },
+  "frozen_configuration_sha256": "7e3b13fc8cb1c041422d9971a3824ccc6510b72344c1d33cff23d92cc6f2c0c4",
+  "random_seeds": {
+    "model": 42
+  },
+  "limitations": [
+    "MSL has only 4 valid unseen channels after required exclusions; requested 5."
+  ],
+  "performance_not_calculated_when_manifest_written": true
+}

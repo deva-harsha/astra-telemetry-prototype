@@ -1,0 +1,92 @@
+{
+  "selected_features": [
+    "value_0"
+  ],
+  "fit_fraction": 0.7,
+  "scaling": "pooled-channel train-fit median and MAD",
+  "near_constant_epsilon": 1e-08,
+  "training_stride": 4,
+  "inference_stride": 1,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "max_epochs": 15,
+  "early_stopping_patience": 3,
+  "early_stopping_min_delta": 1e-05,
+  "random_seed": 42,
+  "event_matching_tolerance": 2,
+  "window_size": 20,
+  "latent_units": 32,
+  "lstm_layers": 1,
+  "loss": "mse",
+  "persistence": 3,
+  "threshold_quantile": 0.995,
+  "protocol_version": "astra-phase4-lstm-v1",
+  "framework": "pytorch-cpu",
+  "architecture": "LSTM encoder, repeated latent vector, LSTM decoder, time-distributed linear output",
+  "threshold_method": "Pooled normal-validation reconstruction-error quantile",
+  "development_channels": {
+    "SMAP": [
+      "A-1",
+      "A-2",
+      "A-3"
+    ],
+    "MSL": [
+      "C-1",
+      "C-2",
+      "D-14"
+    ]
+  },
+  "selected_configuration_id": "lstm-03",
+  "selection_rule": "Maximize synthetic validation point F1 minus twice normal validation point FPR minus 0.002 times normal false alerts per 1,000 minus 0.1 times cross-channel synthetic F1 standard deviation; break ties by smaller window, fewer units, fewer layers, MAE, longer persistence, then higher threshold quantile.",
+  "integration_gate_predeclared_before_holdout": {
+    "macro_f1_improvement_over_threshold": 0.02,
+    "event_recall_not_lower_than_threshold": true,
+    "maximum_false_alert_ratio_to_threshold": 1.25,
+    "inference_must_be_practical": true,
+    "improvement_must_span_multiple_channels": true,
+    "practical_inference_definition": "Total LSTM inference below 60 seconds for the frozen holdout on the recorded CPU"
+  },
+  "holdout_selection_salt": "astra-phase4-lstm-v1",
+  "requested_holdout_channels_per_mission": 5,
+  "development_metrics": {
+    "normal_validation": {
+      "point_precision": 0.0,
+      "point_recall": 0.0,
+      "point_f1": 0.0,
+      "event_recall": null,
+      "false_positive_observations": 13,
+      "point_false_positive_rate": 0.002913,
+      "false_confirmed_events": 4,
+      "false_alerts_per_1000_observations": 0.896459,
+      "missed_events": 0,
+      "mean_detection_delay_observations": null,
+      "median_detection_delay_observations": null,
+      "maximum_detection_delay_observations": null,
+      "ground_truth_events": 0,
+      "detected_events": 4,
+      "evaluated_observations": 4462,
+      "evaluated_runs": 6
+    },
+    "synthetic_validation": {
+      "point_precision": 0.999384,
+      "point_recall": 0.908226,
+      "point_f1": 0.951627,
+      "event_recall": 1.0,
+      "false_positive_observations": 1,
+      "point_false_positive_rate": 0.000374,
+      "false_confirmed_events": 5,
+      "false_alerts_per_1000_observations": 1.120574,
+      "missed_events": 0,
+      "mean_detection_delay_observations": 4.5,
+      "median_detection_delay_observations": 4.0,
+      "maximum_detection_delay_observations": 7,
+      "ground_truth_events": 6,
+      "detected_events": 11,
+      "evaluated_observations": 4462,
+      "evaluated_runs": 6
+    },
+    "selection_score": 0.9366104390975464
+  },
+  "frozen": true,
+  "configuration_sha256": "7e3b13fc8cb1c041422d9971a3824ccc6510b72344c1d33cff23d92cc6f2c0c4"
+}

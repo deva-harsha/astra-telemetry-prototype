@@ -13,3 +13,10 @@ __pycache__/
 data/external/
 reports/evaluation/latest.json
 reports/evaluation/latest.csv
+
+# Optional Phase 4 deep-learning environment and generated artifacts
+.venv-dl/
+artifacts/models/
+.torch/
+**/*.pt
+**/*.pth

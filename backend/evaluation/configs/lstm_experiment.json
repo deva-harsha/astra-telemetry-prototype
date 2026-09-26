@@ -1,0 +1,42 @@
+{
+  "protocol_version": "astra-phase4-lstm-v1",
+  "framework": "pytorch-cpu",
+  "development_channels": {
+    "SMAP": ["A-1", "A-2", "A-3"],
+    "MSL": ["C-1", "C-2", "D-14"]
+  },
+  "selected_features": ["value_0"],
+  "fit_fraction": 0.7,
+  "scaling": "pooled-channel train-fit median and MAD",
+  "near_constant_epsilon": 1e-8,
+  "training_stride": 4,
+  "inference_stride": 1,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "max_epochs": 15,
+  "early_stopping_patience": 3,
+  "early_stopping_min_delta": 1e-5,
+  "random_seed": 42,
+  "event_matching_tolerance": 2,
+  "search_grid": [
+    {"window_size": 20, "latent_units": 16, "lstm_layers": 1, "loss": "mae", "persistence": 3, "threshold_quantile": 0.99},
+    {"window_size": 20, "latent_units": 16, "lstm_layers": 1, "loss": "mae", "persistence": 5, "threshold_quantile": 0.995},
+    {"window_size": 20, "latent_units": 32, "lstm_layers": 1, "loss": "mse", "persistence": 3, "threshold_quantile": 0.995},
+    {"window_size": 40, "latent_units": 16, "lstm_layers": 1, "loss": "mae", "persistence": 3, "threshold_quantile": 0.99},
+    {"window_size": 40, "latent_units": 32, "lstm_layers": 1, "loss": "mse", "persistence": 5, "threshold_quantile": 0.995},
+    {"window_size": 20, "latent_units": 16, "lstm_layers": 2, "loss": "mae", "persistence": 5, "threshold_quantile": 0.99},
+    {"window_size": 40, "latent_units": 16, "lstm_layers": 2, "loss": "mae", "persistence": 5, "threshold_quantile": 0.995},
+    {"window_size": 40, "latent_units": 32, "lstm_layers": 2, "loss": "mse", "persistence": 3, "threshold_quantile": 0.99}
+  ],
+  "selection_rule": "Maximize synthetic validation point F1 minus twice normal validation point FPR minus 0.002 times normal false alerts per 1,000 minus 0.1 times cross-channel synthetic F1 standard deviation; break ties by smaller window, fewer units, fewer layers, MAE, longer persistence, then higher threshold quantile.",
+  "holdout_selection_salt": "astra-phase4-lstm-v1",
+  "requested_holdout_channels_per_mission": 5,
+  "integration_gate": {
+    "macro_f1_improvement_over_threshold": 0.02,
+    "event_recall_not_lower_than_threshold": true,
+    "maximum_false_alert_ratio_to_threshold": 1.25,
+    "inference_must_be_practical": true,
+    "improvement_must_span_multiple_channels": true,
+    "practical_inference_definition": "Total LSTM inference below 60 seconds for the frozen holdout on the recorded CPU"
+  }
+}
