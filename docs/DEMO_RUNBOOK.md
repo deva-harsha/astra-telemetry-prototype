@@ -34,7 +34,7 @@ Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. Confi
 
 ### Final spoken conclusion
 
-> ASTRA's contribution is not simply one anomaly-detection model. It is a transparent workflow that connects telemetry monitoring, persistent-event detection, supporting evidence and human review. We also evaluated deep learning, but retained only the approaches supported by our current evidence.
+> ASTRA’s contribution is not simply another anomaly-detection model; it connects telemetry monitoring, data-quality checks, persistent-event confirmation, supporting evidence, recorded-data replay and human review in one transparent workflow.
 
 ## Scenario details
 
@@ -95,6 +95,10 @@ If the service is cold-starting, wait for the connection message and use **Retry
 10. Upload a valid timestamp/value CSV with an unknown channel. Confirm visualisation-only replay and no detector, risk or health conclusions.
 11. Upload an invalid timestamp CSV and show the specific blocked error.
 
-Say: "ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only."
+Say: "ASTRA supports validated import and replay of recorded telemetry that follows its prototype profile; other usable datasets remain visualisation-only."
 
 Do not say: "ASTRA can analyse any spacecraft telemetry file."
+
+## Production handoff
+
+No production URLs were available during the 2026-09-26 release verification. Before a judged demonstration, complete `PRODUCTION_SMOKE_TEST.md`, then run this script once in a private browser against the recorded Vercel URL. Keep the local commands above ready as the fallback; never substitute local results for a failed production check.
