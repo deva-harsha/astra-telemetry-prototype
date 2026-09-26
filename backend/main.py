@@ -2,10 +2,11 @@ import os
 from time import perf_counter
 
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from .detector import detect
+from .importer import ASTRA_PROFILE, ImportValidationError, MAX_FILE_BYTES, parse_mapping, process_recorded_csv
 from .schemas import DataQuality, Metadata, Metrics, SimulationRequest, SimulationResponse, TelemetryPoint
 from .scoring import score
 from .simulator import CHANNELS, UNITS, simulate
@@ -26,7 +27,14 @@ app.add_middleware(
     allow_origin_regex=r"^https://[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.vercel\.app$",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_headers=[
+        "Content-Type",
+        "X-ASTRA-Filename",
+        "X-ASTRA-Timestamp-Column",
+        "X-ASTRA-Mission-Column",
+        "X-ASTRA-Mapping",
+        "X-ASTRA-Units-Confirmed",
+    ],
 )
 
 
@@ -56,6 +64,50 @@ def scenarios() -> list[dict[str, str]]:
         {"id": "thermal_fault", "label": "Thermal Fault"},
         {"id": "power_fault", "label": "Power Fault"},
     ]
+
+
+@app.get("/api/import/profile")
+def import_profile() -> dict:
+    return ASTRA_PROFILE
+
+
+@app.post("/api/import/telemetry")
+async def import_telemetry(request: Request) -> dict:
+    content_type = request.headers.get("content-type", "").split(";", 1)[0].lower()
+    if content_type not in {"text/csv", "application/csv", "application/vnd.ms-excel"}:
+        raise HTTPException(status_code=415, detail={"code": "csv_required", "message": "Upload a CSV file."})
+    content_length = request.headers.get("content-length")
+    if content_length:
+        try:
+            declared_size = int(content_length)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=400,
+                detail={"code": "invalid_content_length", "message": "Content-Length must be an integer."},
+            ) from exc
+        if declared_size > MAX_FILE_BYTES:
+            raise HTTPException(status_code=413, detail={"code": "file_too_large", "message": "The CSV exceeds the 10 MB upload limit."})
+    chunks: list[bytes] = []
+    size = 0
+    async for chunk in request.stream():
+        size += len(chunk)
+        if size > MAX_FILE_BYTES:
+            raise HTTPException(status_code=413, detail={"code": "file_too_large", "message": "The CSV exceeds the 10 MB upload limit."})
+        chunks.append(chunk)
+    try:
+        raw_mapping = request.headers.get("x-astra-mapping")
+        mapping = parse_mapping(raw_mapping) if raw_mapping is not None else None
+        return process_recorded_csv(
+            b"".join(chunks),
+            filename=request.headers.get("x-astra-filename"),
+            timestamp_column=request.headers.get("x-astra-timestamp-column"),
+            mission_column=request.headers.get("x-astra-mission-column"),
+            mapping=mapping,
+            units_confirmed=request.headers.get("x-astra-units-confirmed", "").lower() == "true",
+        )
+    except ImportValidationError as exc:
+        status = 413 if exc.code in {"file_too_large", "too_many_rows"} else 400
+        raise HTTPException(status_code=status, detail={"code": exc.code, "message": str(exc)}) from exc
 
 
 @app.post("/api/simulate", response_model=SimulationResponse)

@@ -71,3 +71,15 @@ The pre-hardening production JavaScript bundle was 613.30 kB (182.31 kB gzip), w
 ## Unsupported claims
 
 Avoid: predictive maintenance, failure prediction, live spacecraft data, autonomous control, confirmed root-cause diagnosis, proven accuracy, NASA validation and operational readiness. The LSTM is implemented for offline research only and is not a production detector.
+
+
+## Phase 6 recorded import facts
+
+- `POST /api/import/telemetry` validates raw CSV bytes in memory and returns detector-compatible, visualisation-only or invalid output.
+- `GET /api/import/profile` exposes the single supported `astra-sim-v1@1.0` compatibility contract.
+- Files are limited to 10 MB and 50,000 rows, are not permanently stored and are never sent to third parties.
+- Detector compatibility requires all eight canonical channels, confirmed units, finite values, broad sanity bounds and continuous chronological timestamps.
+- Visualisation-only imports generate no events, risk scores or health scores.
+- Import compatibility is a prototype software contract, not operational qualification.
+- Event JSON exports contain bounded provenance and exclude complete telemetry.
+- Investigation reports HTML-escape operator and event text and include a print stylesheet.

@@ -18,6 +18,7 @@ test('event export is deterministic, labelled and treats notes as plain JSON dat
   assert.equal(first.operator_review_state.note, '<script>alert(1)</script>')
   assert.equal(JSON.parse(JSON.stringify(first)).operator_review_state.note, '<script>alert(1)</script>')
   assert.equal(eventFilename(event), 'EVT-001.json')
+  assert.equal('telemetry' in first, false)
 })
 
 test('empty-state copy follows replay state', () => {

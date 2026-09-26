@@ -79,3 +79,22 @@ If the service is cold-starting, wait for the connection message and use **Retry
 - Refresh a nested frontend route if one is added; the SPA rewrite must serve `index.html`.
 - Confirm browser developer tools show no CORS or mixed-content error.
 - Verify `VITE_API_BASE_URL` is the HTTPS Render origin and `ALLOWED_ORIGINS` includes the exact Vercel production origin.
+
+
+## Phase 6 recorded import demonstration
+
+1. Select **Recorded CSV Import** and confirm previous replay and operator state clear.
+2. Download the template, then upload `astra-normal-demo.csv`.
+3. Show the sanitized filename, SHA-256 provenance, ten-row preview and quality summary.
+4. Confirm the eight canonical mappings and check the unit-confirmation box.
+5. Select **Validate mapping** and confirm **Compatible for prototype analysis**.
+6. Start, pause, resume and reset the recorded replay.
+7. Repeat with `astra-power-fault-demo.csv`, select an event, add a note and acknowledge it.
+8. Export JSON and confirm bounded provenance is present and full telemetry is absent.
+9. Select **Print Report** and show the exact disclaimer and print layout.
+10. Upload a valid timestamp/value CSV with an unknown channel. Confirm visualisation-only replay and no detector, risk or health conclusions.
+11. Upload an invalid timestamp CSV and show the specific blocked error.
+
+Say: "ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only."
+
+Do not say: "ASTRA can analyse any spacecraft telemetry file."

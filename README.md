@@ -232,3 +232,16 @@ py -3.12 -m venv .venv-dl
 `backend/requirements-dl.txt` and `.venv-dl` are for offline experimentation only. Render installs only `backend/requirements.txt`; normal FastAPI startup neither requires nor imports PyTorch, and the trained model artifact is not deployed.
 
 See `docs/PPT_CLAIMS.md`, `docs/JUDGE_QA_MODEL_SELECTION.md` and `docs/PHASE5_RELEASE_REPORT.md` for presentation boundaries and the final selection rationale.
+
+
+## Phase 6 recorded telemetry import
+
+The frontend now offers **Simulated Scenario** and **Recorded CSV Import** sources. Recorded files are limited to CSV, 10 MB and 50,000 rows. They are processed in memory and are not permanently stored.
+
+The only detector-compatible import profile is `astra-sim-v1@1.0`. It requires valid chronological timestamps, continuous sampling, all eight canonical channels, finite complete values, broad sanity bounds and explicit confirmation of the documented units. Valid time-series data that does not meet the complete profile remains visualisation-only: ASTRA suppresses detector events, risk scores and health scores.
+
+Download the template and two ASTRA-generated demonstration files from the import interface. Full format and security details are in `docs/TELEMETRY_IMPORT_FORMAT.md`.
+
+The import endpoint accepts raw CSV bytes at `POST /api/import/telemetry`; `GET /api/import/profile` exposes the supported profile. Event JSON export adds bounded provenance without embedding the uploaded dataset. **Print Report** creates an escaped, print-friendly investigation report that the browser can save as PDF.
+
+ASTRA supports validated import and replay of recorded telemetry that follows its prototype schema, while incompatible datasets remain visualisation-only. This does not mean ASTRA can analyse arbitrary spacecraft telemetry files.
