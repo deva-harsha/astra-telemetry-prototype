@@ -1,5 +1,20 @@
 # ASTRA release checklist
 
+## Entry and mission-console redesign gate (2026-09-27)
+
+- [x] First-entry screen, session refresh behavior, Launch screen return and focus transfer checked locally
+- [x] Backend readiness and Retry checked with Start Replay disabled while unavailable
+- [x] Normal, Thermal Fault and Power Fault replay and event evidence checked locally
+- [x] Compatible, visualisation-only and invalid CSV paths checked locally
+- [x] Detector Comparison Lab and Validation Evidence remain reachable in disclosures
+- [x] 320, 680, 980, 1366 and 1920 px entry/console widths show no page-level overflow
+- [x] No backend, simulator, detector, score, compatibility or frozen-evidence file changed
+- [ ] Persist before/after screenshots to files using a browser or CI runner with screenshot export
+- [ ] Verify browser zoom at 200% and an OS-level reduced-motion session
+- [ ] Complete browser JSON download and print-dialog inspection in final deployment smoke test
+
+The visual implementation and limitations are documented in `UI_REDESIGN.md` and `UI_VISUAL_QA.md`. This gate does not replace the unchecked production-release items below.
+
 ## Automated verification
 
 - [x] Backend tests pass (75 passed, 1 optional PyTorch skip on 2026-09-26)

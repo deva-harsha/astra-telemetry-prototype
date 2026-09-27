@@ -17,13 +17,13 @@ npm ci
 npm run dev -- --host localhost --port 5173
 ```
 
-Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. Confirm the page says **Analysis service ready** before starting.
+Open `http://localhost:5173` in a current Chrome, Edge or Firefox release. On a first visit, use **Enter Mission Control**. The entry and console show the genuine analysis-service state; wait for **Analysis service ready** before starting. **Explore Capabilities** opens the method disclosure, and **Launch screen** in the header returns to the entry.
 
 ## Four-minute demonstration
 
 | Time | Action | Point to make |
 |---|---|---|
-| 0:00–0:25 | State the problem and ASTRA boundary. | Ground teams need persistent anomaly evidence with human review. This is simulated, ground-based decision support with no spacecraft command path. |
+| 0:00–0:25 | Show the entry, state the boundary, then enter Mission Control. | Ground teams need persistent anomaly evidence with human review. This is simulated, ground-based decision support with no spacecraft command path. |
 | 0:25–1:05 | Choose **Power Fault**, start at 4× speed and show the replay. | Voltage and current behaviour is injected deterministically. Raw values remain in tooltips; the chart alone is normalized for comparison. |
 | 1:05–1:40 | Pause and resume, then wait for event confirmation. | The live prototype uses fixed limits, Isolation Forest corroboration, trends and three consecutive candidate observations. |
 | 1:40–2:25 | Select each confirmed event and use the graph jump. Inspect contributing signals, timeline and detector evidence. | ASTRA shows what contributed and why review was requested; it does not confirm root cause. |
@@ -94,9 +94,9 @@ If the service is cold-starting, wait for the connection message and use **Retry
 
 1. Select **Recorded CSV Import** and confirm previous replay and operator state clear.
 2. Download the template, then upload `astra-normal-demo.csv`.
-3. Show the sanitized filename, SHA-256 provenance, ten-row preview and quality summary.
+3. Show the sanitized filename, abbreviated SHA-256 provenance, five-row default preview and quality summary. Use **View all preview rows** for the ten-row response preview and **View validation details** for the full file-quality metrics.
 4. Confirm the eight canonical mappings and check the unit-confirmation box.
-5. Select **Validate mapping** and confirm **Compatible for prototype analysis**.
+5. Select **Validate mapping** and confirm **Compatible for prototype analysis**. Mapping collapses to a concise provenance summary and focus moves to Telemetry; **Edit mapping** restores the controls.
 6. Start, pause, resume and reset the recorded replay.
 7. Repeat with `astra-power-fault-demo.csv`, select an event, add a note and acknowledge it.
 8. Export JSON and confirm bounded provenance is present and full telemetry is absent.

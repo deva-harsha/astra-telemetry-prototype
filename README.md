@@ -45,6 +45,10 @@ npm run dev -- --host localhost --port 5173
 
 Open http://localhost:5173. API documentation is at http://127.0.0.1:8000/docs.
 
+The first browser visit in a session opens the ASTRA entry screen. Select **Enter Mission Control** to open the console, or **Explore Capabilities** to open the method section. The header's **Launch screen** action returns to the entry. Backend health checking starts while the entry is displayed; Start Replay remains unavailable until the service is ready. The console groups source and playback controls above telemetry and event review. CSV mapping collapses after successful validation, with an **Edit mapping** action and five preview rows by default.
+
+The entry is presentation only. It adds no spacecraft connection, authentication or detector control. See [UI_REDESIGN.md](docs/UI_REDESIGN.md) for design and performance details and [UI_VISUAL_QA.md](docs/UI_VISUAL_QA.md) for responsive and accessibility checks.
+
 The browser requests all 180 observations in one POST to /api/simulate. The backend generates deterministic telemetry, fits the live-demo detector to the initial normal segment, scores the complete batch, and returns it. The browser then progressively reveals the completed response as a replay. Pause and playback speed affect only this browser replay.
 
 The response remains backward compatible and adds explicit injected-fault ground truth, fault-onset metadata, and an alert-confirmation timestamp. Detector decisions remain separate from ground truth.
